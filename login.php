@@ -33,13 +33,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login</title>
+    <!-- Incluye Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .form-container {
+            max-width: 400px; /* Ancho máximo para el formulario */
+        }
+        .btn-primary {
+            width: 100%; /* Hace que el botón ocupe todo el ancho del contenedor */
+        }
+    </style>
 </head>
 <body>
-    <form method="post" action="login.php">
-        Usuario: <input type="text" name="usuario" required><br>
-        Contraseña: <input type="password" name="pass" required><br>
-        <input type="submit" value="Iniciar sesión">
-    </form>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-8 col-lg-6">
+                <div class="form-container">
+                    <h2 class="text-center">Iniciar sesión</h2>
+                    <form method="post" action="login.php" class="mt-4">
+                        <div class="form-group">
+                            <label for="usuario">Usuario:</label>
+                            <input type="text" class="form-control" name="usuario" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pass">Contraseña:</label>
+                            <input type="password" class="form-control" name="pass" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Opcional: Incluye jQuery y Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
