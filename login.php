@@ -49,8 +49,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .form-container {
             max-width: 400px; /* Ancho máximo para el formulario */
         }
-        .btn-primary {
-            width: 100%; /* Hace que el botón ocupe todo el ancho del contenedor */
+        .btn-custom {
+            width: 50%; /* Ancho personalizado para el botón */
         }
     </style>
 </head>
@@ -69,7 +69,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <label for="pass">Contraseña:</label>
                             <input type="password" class="form-control" name="pass" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-custom">Iniciar sesión</button>
+                        </div>
                     </form>
                 </div>
             </div>
