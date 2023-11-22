@@ -63,10 +63,27 @@ $result = $conn->query($query);
 </head>
 
 <body>
-    <div class="container mt-5 custom-container">
-        <!-- Título de bienvenida -->
-        <h1 class="mb-4 text-center">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</h1>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Otra sección</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="logout.php">Cerrar sesión</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
+    <div class="container mt-5 custom-container">
         <!-- Selector de alumnos -->
         <div class="form-group">
             <form action="" method="post">
@@ -135,10 +152,12 @@ $result = $conn->query($query);
         }
         ?>
 
-        <!-- Botón de cerrar sesión con clase Bootstrap y personalizada -->
-        <a href="logout.php" class="btn btn-danger mt-3 custom-button">Cerrar sesión</a>
         <div class="mt-3"></div> <!-- Espacio adicional después del botón de cerrar sesión -->
     </div>
+
+    <!-- Opcional: Incluye jQuery y Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 
 </html>

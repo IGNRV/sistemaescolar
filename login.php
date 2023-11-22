@@ -5,6 +5,9 @@ require_once 'db.php';
 // Inicia sesión
 session_start();
 
+// Variable para almacenar el mensaje de error
+$errorMsg = '';
+
 // Verifica si el formulario ha sido enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario = $conn->real_escape_string($_POST['usuario']);
@@ -24,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         exit;
     } else {
         // Usuario no encontrado o contraseña incorrecta
-        echo "Usuario o contraseña incorrectos.";
+        $errorMsg = "Usuario o contraseña incorrectos.";
     }
 }
 ?>
@@ -52,6 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         .btn-custom {
             width: 50%; /* Ancho personalizado para el botón */
         }
+        .modal-dialog {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
     </style>
 </head>
 <body>
@@ -78,8 +87,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </div>
 
-    <!-- Opcional: Incluye jQuery y Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <!-- Modal para mostrar el mensaje de error -->
+    <?php if (!empty($errorMsg)): ?>
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="errorModalLabel">Error</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <?php echo $errorMsg; ?>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Incluye jQuery y Bootstrap JS -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+        <script>
+            // Muestra automáticamente el modal al cargar la página
+            $(document).ready(function() {
+                $('#errorModal').modal('show');
+            });
+        </script>
+    <?php endif; ?>
 </body>
 </html>
