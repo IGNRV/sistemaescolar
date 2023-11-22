@@ -1,33 +1,31 @@
 <?php
-// Incluye la conexión a la base de datos
 require_once 'db.php';
-
-// Inicia sesión
-session_start();
 
 // Variable para almacenar el mensaje de error
 $errorMsg = '';
 
 // Verifica si el formulario ha sido enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $usuario = $conn->real_escape_string($_POST['usuario']);
-    $pass = $conn->real_escape_string($_POST['pass']);
+    $rut = $conn->real_escape_string($_POST['rut']);
+    $nombre = $conn->real_escape_string($_POST['nombre']);
+    $correo_electronico = $conn->real_escape_string($_POST['correo_electronico']);
+    $password = $conn->real_escape_string($_POST['password']);
 
-    // Busca el usuario en la base de datos
-    $sql = "SELECT id, usuario, nombre FROM usuarios WHERE usuario = '{$usuario}' AND pass = '{$pass}'";
-    $result = $conn->query($sql);
+    // Verifica si el usuario ya existe en la base de datos
+    $checkUser = "SELECT id FROM usuarios WHERE rut = '{$rut}'";
+    $result = $conn->query($checkUser);
 
     if ($result->num_rows > 0) {
-        // Usuario encontrado
-        $userData = $result->fetch_assoc();
-        $_SESSION['usuario'] = $userData['usuario'];
-        $_SESSION['nombre'] = $userData['nombre'];
-        // Redirecciona a la página protegida
-        header('Location: bienvenido.php');
-        exit;
+        $errorMsg = "El usuario con este RUT ya existe.";
     } else {
-        // Usuario no encontrado o contraseña incorrecta
-        $errorMsg = "Usuario o contraseña incorrectos.";
+        // Agrega el nuevo usuario a la base de datos
+        $insertUser = "INSERT INTO usuarios (rut, nombre, correo_electronico, password) VALUES ('{$rut}', '{$nombre}', '{$correo_electronico}', '{$password}')";
+        if ($conn->query($insertUser) === TRUE) {
+            header('Location: login.php');
+            exit;
+        } else {
+            $errorMsg = "Error al registrar el usuario: " . $conn->error;
+        }
     }
 }
 ?>
@@ -38,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login</title>
+    <title>Registro</title>
     <!-- Incluye Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -70,25 +68,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="row justify-content-center">
             <div class="col-12 col-md-8 col-lg-6">
                 <div class="form-container">
-                    <h2 class="text-center">Iniciar sesión</h2>
-                    <form method="post" action="login.php" class="mt-4">
+                    <h2 class="text-center">Registro de Usuario</h2>
+                    <form method="post" action="registro.php" class="mt-4">
                         <div class="form-group">
-                            <label for="usuario">Usuario:</label>
-                            <input type="text" class="form-control" name="usuario" required>
+                            <label for="rut">RUT:</label>
+                            <input type="text" class="form-control" name="rut" required>
                         </div>
                         <div class="form-group">
-                            <label for="pass">Contraseña:</label>
-                            <input type="password" class="form-control" name="pass" required>
+                            <label for="nombre">Nombre:</label>
+                            <input type="text" class="form-control" name="nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Correo Electrónico:</label>
+                            <input type="email" class="form-control" name="correo_electronico" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Contraseña:</label>
+                            <input type="password" class="form-control" name="password" required>
                         </div>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-custom">Iniciar sesión</button>
+                            <button type="submit" class="btn btn-primary btn-custom">Registrarse</button>
                         </div>
                     </form>
-
-                    <!-- Enlace para registrarse -->
-                    <div class="text-center mt-3">
-                        <a href="registro.php">¿No tienes una cuenta? Regístrate aquí</a>
-                    </div>
                 </div>
             </div>
         </div>
