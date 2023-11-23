@@ -10,7 +10,16 @@
                 <a class="nav-link" href="#">Inicio</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Otra sección</a>
+                <a class="nav-link" href="#">Datos alumno</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Emergencias</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Padres/Apoderados</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#">Tutor Económico</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="logout.php">Cerrar sesión</a>
