@@ -12,11 +12,11 @@ $errorMsg = '';
 
 // Verifica si el formulario ha sido enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $usuario = $conn->real_escape_string($_POST['usuario']);
+    $correo_electronico = $conn->real_escape_string($_POST['correo_electronico']);
     $password = $conn->real_escape_string($_POST['password']);
 
     // Busca el usuario en la base de datos
-    $sql = "SELECT id, usuario, nombre, password FROM usuarios WHERE usuario = '{$usuario}'";
+    $sql = "SELECT id, correo_electronico, nombre, password FROM usuarios WHERE correo_electronico = '{$correo_electronico}'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Verificar si la contraseña proporcionada coincide con el hash almacenado
         if (password_verify($password, $userData['password'])) {
-            $_SESSION['usuario'] = $userData['usuario'];
+            $_SESSION['correo_electronico'] = $userData['correo_electronico'];
             $_SESSION['nombre'] = $userData['nombre'];
             // Redirecciona a la página protegida
             header('Location: bienvenido.php');
@@ -82,8 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <h2 class="text-center">Iniciar sesión</h2>
                     <form method="post" action="login.php" class="mt-4">
                         <div class="form-group">
-                            <label for="usuario">Usuario:</label>
-                            <input type="text" class="form-control" name="usuario" required>
+                            <label for="correo_electronico">Correo electronico:</label>
+                            <input type="text" class="form-control" name="correo_electronico" required>
                         </div>
                         <div class="form-group">
                             <label for="password">Contraseña:</label>

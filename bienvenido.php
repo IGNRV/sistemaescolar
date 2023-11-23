@@ -6,38 +6,15 @@ require_once 'db.php';
 session_start();
 
 // Verifica si el usuario está logueado
-if (!isset($_SESSION['usuario'])) {
-    // Si no está logueado, redirecciona al login
+if (!isset($_SESSION['correo_electronico'])) {
     header('Location: login.php');
     exit;
 }
 
-// Manejar la actualización de los datos del alumno si se envía el formulario
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar'])) {
-    $nombre = $conn->real_escape_string($_POST['nombre']);
-    $numero_de_telefono = $conn->real_escape_string($_POST['numero_de_telefono']);
-    $rut = $conn->real_escape_string($_POST['rut']);
-
-    // Actualiza los datos del alumno seleccionado
-    $updateQuery = "UPDATE alumnos SET nombre = ?, numero_de_telefono = ? WHERE rut = ?";
-    $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param('sss', $nombre, $numero_de_telefono, $rut);
-    $stmt->execute();
-    $stmt->close();
-}
-
-// Buscar alumno si se envió el formulario de búsqueda
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar'])) {
-    $rut = $conn->real_escape_string($_POST['rut']);
-    $queryAlumno = "SELECT id, nombre, fecha_de_nacimiento, rda, appaterno, apmaterno, nombres, calle, numero, resto_direccion, villa_poblacion, comuna, ciudad FROM alumnos WHERE rut = '{$rut}'";
-    $alumnoResult = $conn->query($queryAlumno);
-    $alumno = $alumnoResult->fetch_assoc();
-}
-
-// Obtener todos los ruts de alumnos
-$query = "SELECT rut, id FROM alumnos";
-$result = $conn->query($query);
+// Incluir el archivo nav.php aquí
+include 'nav.php';
 ?>
+
 
 <!DOCTYPE html>
 <html lang="es">
@@ -71,26 +48,6 @@ $result = $conn->query($query);
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Bienvenido, <?php echo $_SESSION['nombre']; ?>!</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item active">
-                    <a class="nav-link" href="#">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#">Otra sección</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="logout.php">Cerrar sesión</a>
-                </li>
-            </ul>
-        </div>
-    </nav>
-
     <div class="container mt-5 custom-container">
         <!-- Selector de alumnos -->
         <div class="form-group">
