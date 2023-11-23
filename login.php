@@ -16,19 +16,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $conn->real_escape_string($_POST['password']);
 
     // Busca el usuario en la base de datos
-    $sql = "SELECT id, usuario, nombre FROM usuarios WHERE usuario = '{$usuario}' AND password = '{$password}'";
+    $sql = "SELECT id, usuario, nombre, password FROM usuarios WHERE usuario = '{$usuario}'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         // Usuario encontrado
         $userData = $result->fetch_assoc();
-        $_SESSION['usuario'] = $userData['usuario'];
-        $_SESSION['nombre'] = $userData['nombre'];
-        // Redirecciona a la página protegida
-        header('Location: bienvenido.php');
-        exit;
+
+        // Verificar si la contraseña proporcionada coincide con el hash almacenado
+        if (password_verify($password, $userData['password'])) {
+            $_SESSION['usuario'] = $userData['usuario'];
+            $_SESSION['nombre'] = $userData['nombre'];
+            // Redirecciona a la página protegida
+            header('Location: bienvenido.php');
+            exit;
+        } else {
+            // Contraseña incorrecta
+            $errorMsg = "Usuario o contraseña incorrectos.";
+        }
     } else {
-        // Usuario no encontrado o contraseña incorrecta
+        // Usuario no encontrado
         $errorMsg = "Usuario o contraseña incorrectos.";
     }
 }

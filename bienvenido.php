@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar'])) {
 // Buscar alumno si se envió el formulario de búsqueda
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['buscar'])) {
     $rut = $conn->real_escape_string($_POST['rut']);
-    $queryAlumno = "SELECT id, nombre, direccion, email, numero_de_telefono FROM alumnos WHERE rut = '{$rut}'";
+    $queryAlumno = "SELECT id, nombre, fecha_de_nacimiento, rda, appaterno, apmaterno, nombres, calle, numero, resto_direccion, villa_poblacion, comuna, ciudad FROM alumnos WHERE rut = '{$rut}'";
     $alumnoResult = $conn->query($queryAlumno);
     $alumno = $alumnoResult->fetch_assoc();
 }
@@ -114,8 +114,48 @@ $result = $conn->query($query);
                     <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
                 </div>
                 <div class="form-group">
-                    <label>Dirección:</label>
-                    <input type="text" class="form-control" value="<?php echo $alumno['direccion']; ?>" disabled>
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['fecha_de_nacimiento']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>RDA:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['rda']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Apellido Paterno:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['appaterno']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Apellido Materno:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['apmaterno']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Nombres:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['nombres']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Calle:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['calle']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Número:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['numero']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Resto Dirección:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['resto_direccion']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Villa/Población:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['villa_poblacion']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Comuna:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['comuna']; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>Ciudad:</label>
+                    <input type="text" class="form-control" value="<?php echo $alumno['ciudad']; ?>" disabled>
                 </div>
                 <div class="form-group">
                     <label>Email:</label>

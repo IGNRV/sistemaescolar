@@ -1,6 +1,3 @@
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 <?php
 require_once 'db.php';
 
@@ -12,17 +9,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rut = $conn->real_escape_string($_POST['rut']);
     $nombre = $conn->real_escape_string($_POST['nombre']);
     $correo_electronico = $conn->real_escape_string($_POST['correo_electronico']);
+    $usuario = $conn->real_escape_string($_POST['usuario']);
     $password = $conn->real_escape_string($_POST['password']);
+    $passwordEncriptada = password_hash($password, PASSWORD_DEFAULT); // Encriptación de la contraseña
 
-    // Verifica si el usuario ya existe en la base de datos
-    $checkUser = "SELECT id FROM usuarios WHERE rut = '{$rut}'";
+    // Verifica si el usuario ya existe en la base de datos (basado en el campo 'usuario', 'correo_electronico' o 'rut', según lo que desees)
+    $checkUser = "SELECT id FROM usuarios WHERE usuario = '{$usuario}' OR correo_electronico = '{$correo_electronico}' OR rut = '{$rut}'";
     $result = $conn->query($checkUser);
 
     if ($result->num_rows > 0) {
-        $errorMsg = "El usuario con este RUT ya existe.";
+        $errorMsg = "El usuario ya existe.";
     } else {
         // Agrega el nuevo usuario a la base de datos
-        $insertUser = "INSERT INTO usuarios (rut, nombre, correo_electronico, password) VALUES ('{$rut}', '{$nombre}', '{$correo_electronico}', '{$password}')";
+        $insertUser = "INSERT INTO usuarios (rut, nombre, correo_electronico, password, usuario) VALUES ('{$rut}', '{$nombre}', '{$correo_electronico}', '{$passwordEncriptada}', '{$usuario}')";
         if ($conn->query($insertUser) === TRUE) {
             header('Location: login.php');
             exit;
@@ -88,6 +87,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="form-group">
                             <label for="password">Contraseña:</label>
                             <input type="password" class="form-control" name="password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre">Usuario:</label>
+                            <input type="text" class="form-control" name="usuario" required>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary btn-custom">Registrarse</button>
