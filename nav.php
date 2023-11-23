@@ -6,12 +6,12 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Inicio</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Datos alumno</a>
-            </li>
+        <li class="nav-item">
+            <a class="nav-link" href="bienvenido.php?page=inicio">Inicio</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="bienvenido.php?page=datos_alumno">Datos alumno</a>
+        </li>
             <li class="nav-item">
                 <a class="nav-link" href="#">Emergencias</a>
             </li>
