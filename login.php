@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // Incluye la conexión a la base de datos
 require_once 'db.php';
 
@@ -11,10 +13,10 @@ $errorMsg = '';
 // Verifica si el formulario ha sido enviado
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $usuario = $conn->real_escape_string($_POST['usuario']);
-    $pass = $conn->real_escape_string($_POST['pass']);
+    $password = $conn->real_escape_string($_POST['password']);
 
     // Busca el usuario en la base de datos
-    $sql = "SELECT id, usuario, nombre FROM usuarios WHERE usuario = '{$usuario}' AND pass = '{$pass}'";
+    $sql = "SELECT id, usuario, nombre FROM usuarios WHERE usuario = '{$usuario}' AND password = '{$password}'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
@@ -77,8 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <input type="text" class="form-control" name="usuario" required>
                         </div>
                         <div class="form-group">
-                            <label for="pass">Contraseña:</label>
-                            <input type="password" class="form-control" name="pass" required>
+                            <label for="password">Contraseña:</label>
+                            <input type="password" class="form-control" name="password" required>
                         </div>
                         <div class="text-center">
                             <button type="submit" class="btn btn-primary btn-custom">Iniciar sesión</button>
