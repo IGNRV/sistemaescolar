@@ -12,15 +12,15 @@
         <li class="nav-item">
             <a class="nav-link" href="bienvenido.php?page=datos_alumno">Datos alumno</a>
         </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Emergencias</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Padres/Apoderados</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Tutor Económico</a>
-            </li>
+        <li class="nav-item">
+            <a class="nav-link" href="bienvenido.php?page=emergencias">Emergencias</a>
+        </li>
+        <li class="nav-item">
+    <a class="nav-link" href="bienvenido.php?page=padres_apoderados">Padres/Apoderados</a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="bienvenido.php?page=tutor_economico">Tutor Económico</a>
+</li>
             <li class="nav-item">
                 <a class="nav-link" href="logout.php">Cerrar sesión</a>
             </li>

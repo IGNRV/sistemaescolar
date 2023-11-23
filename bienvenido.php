@@ -48,27 +48,36 @@ include 'nav.php';
 </head>
 
 <body>
-    <div class="container mt-5 custom-container">
-        <!-- Selector de alumnos -->
-        <?php
-        if (isset($_GET['page'])) {
-            $page = $_GET['page'];
-            switch ($page) {
-                case 'datos_alumno':
-                    include 'datos_alumno.php';
-                    break;
-                case 'inicio':
-                default:
-                    include 'inicio.php';
-                    break;
-            }
-        } else {
-            // Si no hay parámetro 'page', muestra la pantalla de inicio por defecto
-            include 'inicio.php';
+<div class="container mt-5 custom-container">
+    <?php
+    if (isset($_GET['page'])) {
+        $page = $_GET['page'];
+        switch ($page) {
+            case 'datos_alumno':
+                include 'datos_alumno.php';
+                break;
+            case 'emergencias':
+                include 'emergencias.php';
+                break;
+            case 'padres_apoderados':
+                include 'padres_apoderados.php';
+                break;
+            case 'tutor_economico':
+                include 'tutor_economico.php';
+                break;
+            case 'inicio':
+            default:
+                include 'inicio.php';
+                break;
         }
-        ?>
-        <div class="mt-3"></div> <!-- Espacio adicional después del botón de cerrar sesión -->
-    </div>
+    } else {
+        // Si no hay parámetro 'page', muestra la pantalla de inicio por defecto
+        include 'inicio.php';
+    }
+    ?>
+    <div class="mt-3"></div> <!-- Espacio adicional -->
+</div>
+
 
     <!-- Opcional: Incluye jQuery y Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
