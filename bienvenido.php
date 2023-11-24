@@ -44,6 +44,12 @@ include 'nav.php';
         h1 {
             font-size: 1.2em; /* Puedes ajustar este valor según tu preferencia */
         }
+        h2 {
+            font-size: 1.2em; /* Puedes ajustar este valor según tu preferencia */
+        }
+        h3 {
+            font-size: 1.2em; /* Puedes ajustar este valor según tu preferencia */
+        }
     </style>
 </head>
 

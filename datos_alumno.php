@@ -61,7 +61,7 @@
                 <!-- Botón de actualizar con clase Bootstrap y personalizada -->
                 <button type="submit" class="btn btn-primary btn-block custom-button" name="actualizar">Actualizar</button>
             </form>
-            <h2>OBSERVACIONES</h2>
+            <h2>Observaciones</h2>
 <table class="table">
     <thead>
         <tr>

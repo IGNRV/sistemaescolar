@@ -1,5 +1,5 @@
 <div class="emergency-contact">
-    <h2>CONTACTO DE EMERGENCIA</h2>
+    <h1>Contacto de emergencia</h1>
     <form>
         <div class="form-row">
             <div class="form-group col-md-12">
@@ -36,7 +36,7 @@
 </div>
 
 <div class="medical-record">
-    <h2>ANTECEDENTES MÉDICOS (ENFERMEDADES / ALERGIAS)</h2>
+    <h2>Antecedentes Médicos (Enfermedades / Alergias)</h2>
     <table class="table">
         <thead>
             <tr>
