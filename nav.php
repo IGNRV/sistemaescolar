@@ -21,6 +21,10 @@
 <li class="nav-item">
     <a class="nav-link" href="bienvenido.php?page=tutor_economico">Tutor Económico</a>
 </li>
+<li class="nav-item">
+    <a class="nav-link" href="bienvenido.php?page=pago_electronico">Pago Electrónico</a>
+</li>
+
             <li class="nav-item">
                 <a class="nav-link" href="logout.php">Cerrar sesión</a>
             </li>

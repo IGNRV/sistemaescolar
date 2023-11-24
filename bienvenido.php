@@ -71,6 +71,13 @@ include 'nav.php';
             case 'tutor_economico':
                 include 'tutor_economico.php';
                 break;
+            case 'pago_electronico':
+                include 'pago_electronico.php';
+                break;
+            case 'vista_pago_automatico':
+                include 'vista_pago_automatico.php';
+                break;
+                
             case 'inicio':
             default:
                 include 'inicio.php';
