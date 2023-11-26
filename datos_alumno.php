@@ -50,7 +50,36 @@ if ($resultadoAlumno->num_rows > 0) {
     exit;
 }
 
-// A continuación va el código HTML...
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['agregar_observacion'])) {
+    $categoria = $conn->real_escape_string($_POST['categoria']);
+    $descripcion = $conn->real_escape_string($_POST['descripcion']);
+    $fecha = $conn->real_escape_string($_POST['fecha']);
+
+    // Inserta la nueva observación en la base de datos
+    $insertQuery = "INSERT INTO observaciones (categoria, descripcion, fecha, id_usuario) VALUES ('$categoria', '$descripcion', '$fecha', $id_usuario)";
+    if ($conn->query($insertQuery) === TRUE) {
+        echo "Observación agregada correctamente.";
+    } else {
+        echo "Error al agregar la observación: " . $conn->error;
+    }
+}
+
+// Recuperar observaciones del usuario
+$queryObservaciones = "SELECT categoria, descripcion, fecha FROM observaciones WHERE id_usuario = $id_usuario";
+$resultadoObservaciones = $conn->query($queryObservaciones);
+
+// Manejar la eliminación de una observación
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion'])) {
+    $idObservacion = $conn->real_escape_string($_POST['id_observacion']);
+    $deleteQuery = "DELETE FROM observaciones WHERE id = $idObservacion AND id_usuario = $id_usuario";
+    if ($conn->query($deleteQuery) === TRUE) {
+        echo "Observación eliminada correctamente.";
+    } else {
+        echo "Error al eliminar la observación: " . $conn->error;
+    }
+}
+
+// Resto del código existente...
 ?>
 
 <h1 class="text-center">Datos del alumno</h1>
@@ -119,12 +148,46 @@ if ($resultadoAlumno->num_rows > 0) {
             <th scope="col">Categoría</th>
             <th scope="col">Descripción</th>
             <th scope="col">Fecha</th>
+            <th scope="col">Acciones</th>
         </tr>
     </thead>
     <tbody>
-        <!-- Las filas de la tabla se agregarán aquí -->
+        <?php
+        $queryObservaciones = "SELECT id, categoria, descripcion, fecha FROM observaciones WHERE id_usuario = $id_usuario";
+        $resultadoObservaciones = $conn->query($queryObservaciones);
+        while($fila = $resultadoObservaciones->fetch_assoc()):
+        ?>
+        <tr>
+            <td><?php echo htmlspecialchars($fila['categoria']); ?></td>
+            <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
+            <td><?php echo htmlspecialchars($fila['fecha']); ?></td>
+            <td>
+                <form action="" method="post">
+                    <input type="hidden" name="id_observacion" value="<?php echo $fila['id']; ?>">
+                    <button type="submit" name="eliminar_observacion" class="btn btn-danger">Eliminar</button>
+                </form>
+            </td>
+        </tr>
+        <?php endwhile; ?>
     </tbody>
 </table>
 
+
+<form action="" method="post">
+    <div class="form-group">
+        <label>Categoría:</label>
+        <input type="text" class="form-control" name="categoria" required>
+    </div>
+    <div class="form-group">
+        <label>Descripción:</label>
+        <textarea class="form-control" name="descripcion" required></textarea>
+    </div>
+    <div class="form-group">
+        <label>Fecha:</label>
+        <input type="date" class="form-control" name="fecha" required>
+    </div>
+    <button type="submit" class="btn btn-primary btn-block custom-button" name="agregar_observacion">Agregar Observación</button>
+</form>
+
 <!-- Botón para agregar observaciones -->
-<button type="button" class="btn btn-primary btn-block custom-button">AGREGAR OBSERVACIÓN</button>
+<!-- <button type="button" class="btn btn-primary btn-block custom-button">AGREGAR OBSERVACIÓN</button> -->
