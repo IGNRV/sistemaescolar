@@ -56,6 +56,18 @@ if (isset($_POST['actualizar_datos'])) {
     exit;
 }
 
+if (isset($_POST['eliminar'])) {
+    $idEliminar = $_POST['idEliminar'];
+    $sqlEliminar = "DELETE FROM padres_apoderados WHERE id = $idEliminar AND id_usuario = $id_usuario";
+    if ($conn->query($sqlEliminar)) {
+        $_SESSION['mensaje'] = "Registro eliminado correctamente.";
+    } else {
+        $_SESSION['mensaje'] = "Error al eliminar el registro: " . $conn->error;
+    }
+    header("Location: bienvenido.php?page=padres_apoderados");
+    exit;
+}
+
 // Consulta para obtener los datos de padres/apoderados
 $queryPadres = "SELECT * FROM padres_apoderados WHERE id_usuario = $id_usuario";
 $resultadoPadres = $conn->query($queryPadres);
@@ -66,33 +78,37 @@ $resultadoPadres = $conn->query($queryPadres);
 
 <div class="parents-apoderados">
     <h2>Datos padres/apoderados</h2>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>RUT</th>
-                <th>Nombre completo</th>
-                <th>Parentesco</th>
-                <th>Mail</th>
-                <th>Teléfono</th>
-                <th>Otros</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php while($fila = $resultadoPadres->fetch_assoc()): ?>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
                 <tr>
-                    <td><?php echo htmlspecialchars($fila['rut']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['nombre']) . " " . htmlspecialchars($fila['apellido_paterno']) . " " . htmlspecialchars($fila['apellido_materno']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['parentesco']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['correo_electronico_particular']) . "<br>" . htmlspecialchars($fila['correo_electronico_trabajo']); ?></td>
-                    <td><?php echo htmlspecialchars($fila['telefono_particular']) . "<br>" . htmlspecialchars($fila['telefono_trabajo']); ?></td>
-                    <td>
-                        <!-- Aquí puede ir el botón para abrir el pop-up con más detalles -->
-                        <button type="button" class="btn btn-info btn-sm" onclick="openDetails(<?php echo $fila['id']; ?>)">Ver Detalle</button>
-                    </td>
+                    <th>RUT</th>
+                    <th>Nombre completo</th>
+                    <th>Parentesco</th>
+                    <th>Mail</th>
+                    <th>Teléfono</th>
+                    <th>Otros</th>
                 </tr>
-            <?php endwhile; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php while($fila = $resultadoPadres->fetch_assoc()): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($fila['rut']); ?></td>
+                        <td><?php echo htmlspecialchars($fila['nombre']) . " " . htmlspecialchars($fila['apellido_paterno']) . " " . htmlspecialchars($fila['apellido_materno']); ?></td>
+                        <td><?php echo htmlspecialchars($fila['parentesco']); ?></td>
+                        <td><?php echo htmlspecialchars($fila['correo_electronico_particular']) . "<br>" . htmlspecialchars($fila['correo_electronico_trabajo']); ?></td>
+                        <td><?php echo htmlspecialchars($fila['telefono_particular']) . "<br>" . htmlspecialchars($fila['telefono_trabajo']); ?></td>
+                        <td>
+                        <form method="post" action="padres_apoderados.php">
+                                <input type="hidden" name="idEliminar" value="<?php echo $fila['id']; ?>">
+                                <button type="submit" name="eliminar" class="btn btn-danger btn-sm">Eliminar</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+    </div>
     
     <h3>Información de padres/apoderados</h3>
     <form method="POST" action="padres_apoderados.php">
