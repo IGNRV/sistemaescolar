@@ -5,6 +5,9 @@ require_once 'db.php';
 // Inicia sesión
 session_start();
 
+// Define una variable para el mensaje
+$mensaje = '';
+
 // Verifica si el usuario está logueado y obtiene su id
 if (!isset($_SESSION['correo_electronico'])) {
     header('Location: login.php');
@@ -19,7 +22,7 @@ if (!isset($_SESSION['correo_electronico'])) {
         $id_usuario = $usuario['id'];
     } else {
         // Manejar el error si el usuario no se encuentra
-        echo "Usuario no encontrado.";
+        $mensaje = "Usuario no encontrado.";
         exit;
     }
 }
@@ -33,9 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar'])) {
     // Actualiza los datos en la base de datos
     $updateQuery = "UPDATE alumno SET nombre = '$nombre', telefono = '$telefono' WHERE id_usuario = $id_usuario";
     if ($conn->query($updateQuery) === TRUE) {
-        echo "Datos actualizados correctamente.";
+        $mensaje = "Datos actualizados correctamente.";
     } else {
-        echo "Error al actualizar los datos: " . $conn->error;
+        $mensaje = "Error al actualizar los datos: " . $conn->error;
     }
 }
 
@@ -46,7 +49,7 @@ $resultadoAlumno = $conn->query($queryAlumno);
 if ($resultadoAlumno->num_rows > 0) {
     $alumno = $resultadoAlumno->fetch_assoc();
 } else {
-    echo "Datos del alumno no encontrados.";
+    $mensaje = "Datos del alumno no encontrados.";
     exit;
 }
 
@@ -58,9 +61,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['agregar_observacion'])
     // Inserta la nueva observación en la base de datos
     $insertQuery = "INSERT INTO observaciones (categoria, descripcion, fecha, id_usuario) VALUES ('$categoria', '$descripcion', '$fecha', $id_usuario)";
     if ($conn->query($insertQuery) === TRUE) {
-        echo "Observación agregada correctamente.";
+        $mensaje = "Observación agregada correctamente.";
     } else {
-        echo "Error al agregar la observación: " . $conn->error;
+        $mensaje = "Error al agregar la observación: " . $conn->error;
     }
 }
 
@@ -73,14 +76,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
     $idObservacion = $conn->real_escape_string($_POST['id_observacion']);
     $deleteQuery = "DELETE FROM observaciones WHERE id = $idObservacion AND id_usuario = $id_usuario";
     if ($conn->query($deleteQuery) === TRUE) {
-        echo "Observación eliminada correctamente.";
+        $mensaje = "Observación eliminada correctamente.";
     } else {
-        echo "Error al eliminar la observación: " . $conn->error;
+        $mensaje = "Error al eliminar la observación: " . $conn->error;
     }
 }
-
 // Resto del código existente...
 ?>
+<?php if (!empty($mensaje)): ?>
+    <div class="alert alert-success" role="alert">
+        <?php echo $mensaje; ?>
+    </div>
+<?php endif; ?>
 
 <h1 class="text-center">Datos del alumno</h1>
             <!-- Formulario de datos del alumno -->
@@ -162,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
             <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
             <td><?php echo htmlspecialchars($fila['fecha']); ?></td>
             <td>
-                <form action="" method="post">
+                <form action="" method="post" onsubmit="return confirmDelete();">
                     <input type="hidden" name="id_observacion" value="<?php echo $fila['id']; ?>">
                     <button type="submit" name="eliminar_observacion" class="btn btn-danger">Eliminar</button>
                 </form>
@@ -189,5 +196,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
     <button type="submit" class="btn btn-primary btn-block custom-button" name="agregar_observacion">Agregar Observación</button>
 </form>
 
-<!-- Botón para agregar observaciones -->
-<!-- <button type="button" class="btn btn-primary btn-block custom-button">AGREGAR OBSERVACIÓN</button> -->
+
+<script>
+function confirmDelete() {
+    return confirm("¿Estás seguro de que quieres eliminar esta observación?");
+}
+</script>
