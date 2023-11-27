@@ -111,14 +111,14 @@ include 'nav.php';
 
 <body>
     <div class="container mt-5 custom-container">
-        <!-- Mostrar la foto de perfil del alumno -->
-        <form method="post" action="" enctype="multipart/form-data">
+         <!-- Mostrar la foto de perfil del alumno -->
+         <form id="cambiarFotoForm" method="post" action="" enctype="multipart/form-data" style="display: none;">
             <label for="nueva_foto">Cambiar foto de perfil:</label>
-            <input type="file" name="nueva_foto" id="nueva_foto">
+            <input type="file" name="nueva_foto" id="nueva_foto" style="display: none;">
             <button type="submit">Cargar Nueva Foto</button>
         </form>
 
-        <img src="<?php echo $foto_de_alumno; ?>" alt="Foto de Perfil" class="img-fluid" style="border-radius: 50%; max-width: 200px; margin: 20px auto;">
+        <img id="fotoPerfil" src="<?php echo $foto_de_alumno; ?>" alt="Foto de Perfil" class="img-fluid" style="border-radius: 50%; max-width: 200px; margin: 20px auto; cursor: pointer;" onclick="document.getElementById('btnCambiarFoto').click();">
 
         <?php
         if (isset($_GET['page'])) {
@@ -155,6 +155,25 @@ include 'nav.php';
         ?>
         <div class="mt-3"></div> <!-- Espacio adicional -->
     </div>
+
+    <script>
+    // Activar el clic en la imagen para abrir el selector de archivos
+    document.getElementById('fotoPerfil').addEventListener('click', function () {
+        document.getElementById('nueva_foto').click();
+    });
+
+    // Enviar el formulario al seleccionar una nueva foto
+    document.getElementById('nueva_foto').addEventListener('change', function () {
+        document.getElementById('cambiarFotoForm').submit();
+    });
+
+    // Mostrar el formulario al hacer clic en el botón
+    document.getElementById('btnCambiarFoto').addEventListener('click', function (e) {
+        e.preventDefault();
+        document.getElementById('nueva_foto').click();
+    });
+</script>
+
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
