@@ -15,7 +15,6 @@
             <thead>
                 <tr>
                     <th>N° Cuota</th>
-                    <th>Tipo Pago</th>
                     <th>Fecha Vencimiento</th>
                     <th>Medio de Pago</th>
                     <th>Fecha de Pago</th>
@@ -37,7 +36,6 @@
             <thead>
                 <tr>
                     <th>N° Cuota</th>
-                    <th>Tipo Pago</th>
                     <th>Fecha Vencimiento</th>
                     <th>Medio de Pago</th>
                     <th>Fecha de Pago</th>
