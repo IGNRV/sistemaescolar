@@ -89,10 +89,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
     </div>
 <?php endif; ?>
 
-<h1 class="text-center">Datos del alumno</h1>
+    <div class="titulo-container" style="background-color: blue; padding: 10px;">
+        <h1 class="text-center" style="color: white;">Datos del alumno</h1>
+    </div>
             <!-- Formulario de datos del alumno -->
             <form action="" method="post">
                 <input type="hidden" name="rut" value="<?php echo $rut; ?>">
+                <div class="row">
+                    <!-- Primera columna -->
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Nombre:</label>
+                            <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
+                        </div>
+
+                    <div class="form-group">
+                        <label>Apellido Paterno:</label>
+                        <input type="text" class="form-control" name="apellido_paterno" value="<?php echo $alumno['apellido_paterno']; ?>" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Apellido Materno:</label>
+                        <input type="text" class="form-control" name="apellido_materno" value="<?php echo $alumno['apellido_materno']; ?>" disabled>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de Nacimiento:</label>
+                        <input type="text" class="form-control" name="fecha_de_nacimiento" value="<?php echo $alumno['fecha_de_nacimiento']; ?>" disabled>
+                    </div>
+
+            <!-- Otros campos de la primera columna -->
+
+                </div>
                 <div class="form-group">
                     <label>Nombre:</label>
                     <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
@@ -151,6 +179,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
             <h2>Observaciones</h2>
 <table class="table">
     <thead>
+        <style>
+        .titulo-container {
+            background-color: blue;
+            padding: 10px;
+            margin-bottom: 20px; /* Puedes ajustar esto según sea necesario */
+        }
+
+        .titulo-container h1 {
+            color: white;
+        /* Puedes ajustar el color del texto según sea necesario */
+        }
+        </style>
         <tr>
             <th scope="col">Categoría</th>
             <th scope="col">Descripción</th>

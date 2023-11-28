@@ -3,25 +3,26 @@
     <div class="form-group">
         <label for="rutAlumno">Rut del alumno:</label>
         <input type="text" class="form-control" id="rutAlumno" placeholder="Ingrese RUT del alumno">
-        <button class="btn btn-primary custom-button mt-3">Buscar</button>
+        <button class="btn btn-primary custom-button mt-3" id="btnBuscarAlumno">Buscar</button>
     </div>
-    <button id="btnPagoAutomatico" class="btn btn-warning custom-button mt-3">Pago automático cuentas</button>
+    <div id="resultadoBusqueda"></div>
 
     <h3>Valores pendientes de año anterior</h3>
     <!-- Tabla de valores pendientes del año anterior -->
     <!-- La tabla deberá ser llenada con datos dinámicamente -->
-    <div class="table-responsive">
+    <div id="tablaValoresPendientes" class="table-responsive">
         <table class="table">
-            <thead>
-                <tr>
-                    <th>N° Cuota</th>
-                    <th>Fecha Vencimiento</th>
-                    <th>Medio de Pago</th>
-                    <th>Fecha de Pago</th>
-                    <th>Estado</th>
-                    <th>Seleccione Valor a Pagar</th>
-                </tr>
-            </thead>
+                <thead>
+                    <tr>
+                        <th>N° Cuota</th>
+                        <th>Fecha Vencimiento</th>
+                        <th>Monto</th> <!-- Nueva columna agregada -->
+                        <th>Medio de Pago</th>
+                        <th>Fecha de Pago</th>
+                        <th>Estado</th>
+                        <th>Seleccione Valor a Pagar</th>
+                    </tr>
+                </thead>
             <tbody>
                 <!-- Los datos de las cuotas se insertarán aquí -->
             </tbody>
@@ -31,43 +32,45 @@
     <h3>Plan de pago año en curso</h3>
     <!-- Tabla de plan de pago del año en curso -->
     <!-- La tabla deberá ser llenada con datos dinámicamente -->
-    <div class="table-responsive">
+    <div id="tablaPlanPagoActual" class="table-responsive">
         <table class="table">
-            <thead>
-                <tr>
-                    <th>N° Cuota</th>
-                    <th>Fecha Vencimiento</th>
-                    <th>Medio de Pago</th>
-                    <th>Fecha de Pago</th>
-                    <th>Estado</th>
-                    <th>Seleccione Valor a Pagar</th>
-                </tr>
-            </thead>
+                <thead>
+                    <tr>
+                        <th>N° Cuota</th>
+                        <th>Fecha Vencimiento</th>
+                        <th>Monto</th> <!-- Nueva columna agregada -->
+                        <th>Medio de Pago</th>
+                        <th>Fecha de Pago</th>
+                        <th>Estado</th>
+                        <th>Seleccione Valor a Pagar</th>
+                    </tr>
+                </thead>
             <tbody>
                 <!-- Los datos de las cuotas se insertarán aquí -->
             </tbody>
         </table>
     </div>
 
-    <button class="btn btn-primary custom-button mt-3">Seleccionar valores</button>
+    <button class="btn btn-primary custom-button mt-3" id="btnSeleccionarValores">Seleccionar valores</button>
+
 
     <h3>Resumen de valores a pagar</h3>
-    <div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>N° Cupón</th>
-                    <th>Fecha</th>
-                    <th>RUT alumno</th>
-                    <th>Monto</th>
-                    <th>Eliminar</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Los datos del resumen de pagos se insertarán aquí -->
-            </tbody>
-        </table>
-    </div>
+<div class="table-responsive">
+    <table class="table" id="resumenValores">
+        <thead>
+            <tr>
+                <th>N° Cupón</th>
+                <th>Fecha</th>
+                <th>RUT alumno</th>
+                <th>Monto</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Los datos del resumen de pagos se insertarán aquí -->
+        </tbody>
+    </table>
+</div>
 
     <div class="total-pagar mt-3">
         <strong>Total a pagar $</strong>
@@ -84,4 +87,126 @@
     document.getElementById('btnPagoAutomatico').addEventListener('click', function() {
         window.location.href = 'bienvenido.php?page=vista_pago_automatico';
     });
+</script>
+
+<script type="text/javascript">
+document.getElementById('btnBuscarAlumno').addEventListener('click', function() {
+    var rut = document.getElementById('rutAlumno').value;
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'buscar_alumno.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+        // Parseamos la respuesta JSON
+        var respuesta = JSON.parse(this.responseText);
+        if (respuesta.anterior || respuesta.actual) {
+            // Llamamos a las funciones para mostrar los datos en las tablas
+            mostrarDatos(respuesta.anterior, 'tablaValoresPendientes');
+            mostrarDatos(respuesta.actual, 'tablaPlanPagoActual');
+        } else {
+            document.getElementById('resultadoBusqueda').innerHTML = "Alumno no encontrado.";
+        }
+    };
+    xhr.send('rut=' + rut);
+});
+
+function mostrarDatos(datos, idTabla) {
+    var tabla = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
+    tabla.innerHTML = ''; // Limpiamos la tabla antes de agregar nuevos datos
+
+    datos.forEach(function(cuota, index) {
+        var fila = tabla.insertRow();
+        fila.insertCell(-1).textContent = index + 1; // N° Cuota
+        fila.insertCell(-1).textContent = cuota.fecha_cuota_deuda; // Fecha Vencimiento
+        fila.insertCell(-1).textContent = cuota.monto; // Monto
+        fila.insertCell(-1).textContent = ''; // Medio de Pago (aquí va el valor correcto)
+        fila.insertCell(-1).textContent = ''; // Fecha de Pago (aquí va el valor correcto)
+        fila.insertCell(-1).textContent = cuota.estado_cuota == 0 ? 'Pendiente' : 'Pagada'; // Estado
+        
+        // Agregar el input de tipo check si el estado de la cuota es 0
+        var cellCheck = fila.insertCell(-1);
+        if (cuota.estado_cuota == 0) {
+            var inputCheck = document.createElement('input');
+            inputCheck.type = 'checkbox';
+            inputCheck.name = 'cuotaSeleccionada[]';
+            inputCheck.value = cuota.id;
+            cellCheck.appendChild(inputCheck);
+        } else {
+            cellCheck.textContent = ''; // o cualquier otro valor que represente una celda vacía o con información relevante
+        }
+    });
+}
+
+function seleccionarValores() {
+    var cuotasSeleccionadas = document.querySelectorAll('input[name="cuotaSeleccionada[]"]:checked');
+    var tablaResumen = document.getElementById('resumenValores').getElementsByTagName('tbody')[0];
+    var rutAlumno = document.getElementById('rutAlumno').value; // Asumiendo que el RUT se mantiene en el input
+    
+    cuotasSeleccionadas.forEach(function(checkbox, index) {
+        var fila = checkbox.closest('tr');
+        var nuevaFila = tablaResumen.insertRow();
+        
+        nuevaFila.insertCell(-1).textContent = index + 1; // N° Cupón
+        nuevaFila.insertCell(-1).textContent = fila.cells[1].textContent; // Fecha Vencimiento
+        nuevaFila.insertCell(-1).textContent = rutAlumno; // RUT alumno
+        nuevaFila.insertCell(-1).textContent = fila.cells[2].textContent; // Monto
+        
+        // Botón Eliminar
+        var cellEliminar = nuevaFila.insertCell(-1);
+        var btnEliminar = document.createElement('button');
+        btnEliminar.textContent = 'Eliminar';
+        btnEliminar.onclick = function() { 
+            // Eliminar la fila del resumen
+            tablaResumen.deleteRow(nuevaFila.rowIndex - 1);
+        };
+        cellEliminar.appendChild(btnEliminar);
+    });
+}
+
+// Función para actualizar el total a pagar
+function actualizarTotalAPagar() {
+    var total = 0;
+    var filas = document.querySelectorAll('#resumenValores tbody tr');
+    filas.forEach(function(fila) {
+        total += parseFloat(fila.cells[3].textContent); // Asumiendo que la columna de Monto está en el índice 3
+    });
+    document.querySelector('.total-pagar strong').textContent = "Total a pagar $" + total.toFixed(0);
+}
+
+document.getElementById('btnSeleccionarValores').addEventListener('click', function() {
+    var cuotasSeleccionadas = document.querySelectorAll('input[name="cuotaSeleccionada[]"]:checked');
+    var tablaResumen = document.getElementById('resumenValores').getElementsByTagName('tbody')[0];
+    var rutAlumno = document.getElementById('rutAlumno').value;
+
+    cuotasSeleccionadas.forEach(function(checkbox, index) {
+        if (!checkbox.disabled) { // Solo agregamos la fila si el checkbox no está deshabilitado
+            var fila = checkbox.closest('tr');
+            var nuevaFila = tablaResumen.insertRow();
+            
+            nuevaFila.insertCell(-1).textContent = tablaResumen.rows.length; // N° Cupón
+            nuevaFila.insertCell(-1).textContent = fila.cells[1].textContent; // Fecha Vencimiento
+            nuevaFila.insertCell(-1).textContent = rutAlumno; // RUT alumno
+            nuevaFila.insertCell(-1).textContent = fila.cells[2].textContent; // Monto
+            
+            // Botón Eliminar
+            var cellEliminar = nuevaFila.insertCell(-1);
+            var btnEliminar = document.createElement('button');
+            btnEliminar.textContent = 'Eliminar';
+            btnEliminar.type = 'button';
+            btnEliminar.onclick = function() { 
+                tablaResumen.deleteRow(nuevaFila.rowIndex - 1);
+                actualizarTotalAPagar(); // Actualizar el total después de eliminar una fila
+            };
+            cellEliminar.appendChild(btnEliminar);
+
+            checkbox.disabled = true; // Deshabilitamos el checkbox para no volver a agregar la misma fila
+        }
+    });
+
+    actualizarTotalAPagar(); // Actualizar el total después de agregar nuevas filas
+});
+
+
+
+
+
 </script>
