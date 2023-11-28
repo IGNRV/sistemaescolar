@@ -24,21 +24,27 @@ if ($resultadoUsuario->num_rows > 0) {
     $id_usuario = $usuario['id'];
 
     // Consulta para obtener la foto del alumno
-    $queryFoto = "SELECT foto_de_alumno FROM alumno WHERE id_usuario = $id_usuario";
-    $resultadoFoto = $conn->query($queryFoto);
+$queryFoto = "SELECT foto_de_alumno FROM alumno WHERE id_usuario = $id_usuario";
+$resultadoFoto = $conn->query($queryFoto);
 
-    if ($resultadoFoto->num_rows > 0) {
-        $fila = $resultadoFoto->fetch_assoc();
-        $nombre_foto = $fila['foto_de_alumno'];
+if ($resultadoFoto->num_rows > 0) {
+    $fila = $resultadoFoto->fetch_assoc();
+    $nombre_foto = $fila['foto_de_alumno'];
 
-        // Construir la URL completa de la foto
-        $url_foto = "https://sistemaescolar.oralisisdataservice.cl/fperfil/$nombre_foto";
+    // Construir la URL completa de la foto
+    $url_foto = "https://sistemaescolar.oralisisdataservice.cl/fperfil/$nombre_foto";
 
-        // Verificar si la foto existe antes de asignarla
-        if (get_headers($url_foto)[0] == 'HTTP/1.1 200 OK') {
-            $foto_de_alumno = $url_foto;
-        }
+    // Verificar si la foto existe antes de asignarla
+    if (get_headers($url_foto)[0] == 'HTTP/1.1 200 OK') {
+        $foto_de_alumno = $url_foto;
+    } else {
+        // Asignar la foto de perfil por defecto si la foto no existe
+        $foto_de_alumno = "22_Profile.jpg"; // Ruta relativa de la imagen por defecto
     }
+} else {
+    // Asignar la foto de perfil por defecto si no hay foto en la base de datos
+    $foto_de_alumno = "22_Profile.jpg"; // Ruta relativa de la imagen por defecto
+}
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_FILES["nueva_foto"])) {

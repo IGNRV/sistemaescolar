@@ -88,22 +88,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
 
 
 ?>
-<style>
-    .emergency-contact h1 {
-        background-color: #007bff; /* Cambia esto al color azul que prefieras */
-        color: #ffffff; /* Cambia esto al color de texto que prefieras */
-        padding: 10px; /* Ajusta el espaciado interno según tus preferencias */
-        margin: 20px auto; /* Márgenes automáticos para centrar horizontalmente */
-        text-align: center; /* Centrar horizontalmente el texto */
-        line-height: 2; /* Ajusta la altura de línea para centrar verticalmente el texto */
-    }
-</style>
 <?php if (!empty($mensaje)): ?>
         <div class="alert alert-success" role="alert">
             <?php echo $mensaje; ?>
         </div>
     <?php endif; ?>
-    
 <div class="emergency-contact">
     <h1>Contacto de emergencia</h1>
     <form method="post">
@@ -137,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
                     <input type="email" name="correo_electronico" class="form-control" id="inputEmail" value="<?php echo $contactoEmergencia['correo_electronico'] ?? ''; ?>">
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary btn-block btn-sm custom-button" name="actualizar_contacto">ACTUALIZAR CONTACTO DE EMERGENCIA</button>
+            <button type="submit" class="btn btn-primary btn-block" name="actualizar_contacto">ACTUALIZAR CONTACTO DE EMERGENCIA</button>
         </form>
 </div>
 
@@ -186,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
                 <label for="inputFecha">Fecha</label>
                 <input type="date" class="form-control" name="fecha" id="inputFecha" required>
             </div>
-            <button type="submit" class="btn btn-primary btn-block btn-sm custom-button" name="agregar_antecedentes">AGREGAR ANTECEDENTES MÉDICOS</button>
+            <button type="submit" class="btn btn-primary btn-block" name="agregar_antecedentes">AGREGAR ANTECEDENTES MÉDICOS</button>
         </form>
         <!-- Tabla de antecedentes médicos -->
     </div>

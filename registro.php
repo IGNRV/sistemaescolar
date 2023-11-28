@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $errorMsg = "El usuario ya existe.";
     } else {
         // Agrega el nuevo usuario a la base de datos
-        $insertUser = "INSERT INTO usuarios (rut, nombre, correo_electronico, password) VALUES ('{$rut}', '{$nombre}', '{$correo_electronico}', '{$passwordEncriptada}')";
+        $insertUser = "INSERT INTO usuarios (rut, nombre, correo_electronico, password, fperfil) VALUES ('{$rut}', '{$nombre}', '{$correo_electronico}', '{$passwordEncriptada}', '22_Profile.jpg')";
         if ($conn->query($insertUser) === TRUE) {
             header('Location: login.php');
             exit;
