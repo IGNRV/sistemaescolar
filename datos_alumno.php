@@ -89,93 +89,92 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
     </div>
 <?php endif; ?>
 
-    <div class="titulo-container" style="background-color: blue; padding: 10px;">
+    <div class="titulo-container" style="background-color: blue; padding: 10px; display: flex; justify-content: center; align-items: center; height: 100%;">
         <h1 class="text-center" style="color: white;">Datos del alumno</h1>
     </div>
             <!-- Formulario de datos del alumno -->
             <form action="" method="post">
-                <input type="hidden" name="rut" value="<?php echo $rut; ?>">
-                <div class="row">
-                    <!-- Primera columna -->
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Nombre:</label>
-                            <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
-                        </div>
+    <input type="hidden" name="rut" value="<?php echo $rut; ?>">
 
-                    <div class="form-group">
-                        <label>Apellido Paterno:</label>
-                        <input type="text" class="form-control" name="apellido_paterno" value="<?php echo $alumno['apellido_paterno']; ?>" disabled>
-                    </div>
+    <div class="row">
+        <!-- Primera columna -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Nombre:</label>
+                <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
+            </div>
 
-                    <div class="form-group">
-                        <label>Apellido Materno:</label>
-                        <input type="text" class="form-control" name="apellido_materno" value="<?php echo $alumno['apellido_materno']; ?>" disabled>
-                    </div>
+            <div class="form-group">
+                <label>Apellido Materno:</label>
+                <input type="text" class="form-control" name="apellido_materno" value="<?php echo $alumno['apellido_materno']; ?>" disabled>
+            </div>
 
-                    <div class="form-group">
-                        <label>Fecha de Nacimiento:</label>
-                        <input type="text" class="form-control" name="fecha_de_nacimiento" value="<?php echo $alumno['fecha_de_nacimiento']; ?>" disabled>
-                    </div>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" class="form-control" name="correo_electronico" value="<?php echo $alumno['correo_electronico']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Calle:</label>
+                <input type="text" class="form-control" name="calle" value="<?php echo $alumno['calle']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Resto Dirección:</label>
+                <input type="text" class="form-control" name="resto_direccion" value="<?php echo $alumno['resto_direccion']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Ciudad:</label>
+                <input type="text" class="form-control" name="ciudad" value="<?php echo $alumno['ciudad']; ?>" disabled>
+            </div>
 
             <!-- Otros campos de la primera columna -->
 
-                </div>
-                <div class="form-group">
-                    <label>Nombre:</label>
-                    <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
-                </div>
-                <div class="form-group">
-                    <label>Fecha de Nacimiento:</label>
-                    <input type="text" class="form-control" name="fecha_de_nacimiento" value="<?php echo $alumno['fecha_de_nacimiento']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>RDA:</label>
-                    <input type="text" class="form-control" name="rda" value="<?php echo $alumno['rda']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Apellido Paterno:</label>
-                    <input type="text" class="form-control" name="apellido_paterno" value="<?php echo $alumno['apellido_paterno']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Apellido Materno:</label>
-                    <input type="text" class="form-control" name="apellido_materno" value="<?php echo $alumno['apellido_materno']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Calle:</label>
-                    <input type="text" class="form-control" name="calle" value="<?php echo $alumno['calle']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Número:</label>
-                    <input type="text" class="form-control" name="n_calle" value="<?php echo $alumno['n_calle']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Resto Dirección:</label>
-                    <input type="text" class="form-control" name="resto_direccion" value="<?php echo $alumno['resto_direccion']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Villa/Población:</label>
-                    <input type="text" class="form-control" name="villa_poblacion" value="<?php echo $alumno['villa_poblacion']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Comuna:</label>
-                    <input type="text" class="form-control" name="comuna" value="<?php echo $alumno['comuna']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Ciudad:</label>
-                    <input type="text" class="form-control" name="ciudad" value="<?php echo $alumno['ciudad']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="email" class="form-control" name="correo_electronico" value="<?php echo $alumno['correo_electronico']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>Número de teléfono:</label>
-                    <input type="text" class="form-control" name="telefono" value="<?php echo $alumno['telefono']; ?>">
-                </div>
-                <!-- Botón de actualizar con clase Bootstrap y personalizada -->
+        </div>
+
+        <!-- Segunda columna -->
+        <div class="col-md-6">
+            <div class="form-group">
+                <label>Apellido Paterno:</label>
+                <input type="text" class="form-control" name="apellido_paterno" value="<?php echo $alumno['apellido_paterno']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>RDA:</label>
+                <input type="text" class="form-control" name="rda" value="<?php echo $alumno['rda']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Número de teléfono:</label>
+                <input type="text" class="form-control" name="telefono" value="<?php echo $alumno['telefono']; ?>">
+            </div>
+
+            <div class="form-group">
+                <label>Número:</label>
+                <input type="text" class="form-control" name="n_calle" value="<?php echo $alumno['n_calle']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Villa/Población:</label>
+                <input type="text" class="form-control" name="villa_poblacion" value="<?php echo $alumno['villa_poblacion']; ?>" disabled>
+            </div>
+
+            <div class="form-group">
+                <label>Comuna:</label>
+                <input type="text" class="form-control" name="comuna" value="<?php echo $alumno['comuna']; ?>" disabled>
+            </div>
+
+            <!-- Otros campos de la segunda columna -->
+
+        </div>
+    </div>
+
+    <!-- Resto del formulario y botón de actualizar -->
+
+
                 <button type="submit" class="btn btn-primary btn-block custom-button" name="actualizar">Actualizar</button>
-            </form>
+</form>
             <h2>Observaciones</h2>
 <table class="table">
     <thead>

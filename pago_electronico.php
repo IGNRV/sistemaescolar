@@ -78,11 +78,21 @@
     </div>
 
     <div class="metodos-pago mt-3">
-        <button class="btn btn-success custom-button">Pagar con tarjeta CR/DB</button>
-        <button class="btn btn-info custom-button">Pagar con transferencia</button>
+        <button class="btn btn-success custom-button" id="payWithCard">Pagar con tarjeta CR/DB</button>
+        <button class="btn btn-info custom-button" id="payWithTransfer">Pagar con transferencia</button>
         <button class="btn btn-secondary custom-button">Agregar otro alumno</button>
     </div>
 </div>
+<form id="paymentForm" method="post" action="process_payment.php" style="display: none;">
+    <input type="text" name="customer_name" id="customerName" required />
+    <input type="text" name="customer_email" id="customerEmail" required />
+    <input type="number" name="amount" id="amountToPay" required />
+</form>
+
+<form id="transferPaymentForm" method="post" action="khipu/index.php" style="display: none;">
+    <input type="hidden" name="amount" id="transferAmountToPay" />
+</form>
+
 <script type="text/javascript">
     document.getElementById('btnPagoAutomatico').addEventListener('click', function() {
         window.location.href = 'bienvenido.php?page=vista_pago_automatico';
@@ -205,8 +215,38 @@ document.getElementById('btnSeleccionarValores').addEventListener('click', funct
     actualizarTotalAPagar(); // Actualizar el total después de agregar nuevas filas
 });
 
+var nombreDelUsuario = "<?php echo $_SESSION['nombre']; ?>"; // Asegúrate de que 'nombre' exista en tu sesión
+var correoElectronico = "<?php echo $_SESSION['correo_electronico']; ?>"; // Asegúrate de que 'correo_electronico' exista en tu sesión
 
+document.getElementById('payWithCard').addEventListener('click', function() {
+    var totalAPagarTexto = document.querySelector('.total-pagar strong').textContent;
+    var totalAPagar = totalAPagarTexto.split("$")[1] ? parseFloat(totalAPagarTexto.split("$")[1]) : 0;
 
+    // Verificar si hay un monto total antes de proceder con el pago
+    if (totalAPagar > 0) {
+        // Llenar el formulario oculto con los datos
+        document.getElementById('customerName').value = nombreDelUsuario;
+        document.getElementById('customerEmail').value = correoElectronico;
+        document.getElementById('amountToPay').value = totalAPagar;
+
+        // Enviar el formulario
+        document.getElementById('paymentForm').submit();
+    } else {
+        alert("Por favor, seleccione al menos una cuota para pagar.");
+    }
+});
+
+document.getElementById('payWithTransfer').addEventListener('click', function() {
+        var totalAPagarTexto = document.querySelector('.total-pagar strong').textContent;
+        var totalAPagar = totalAPagarTexto.split("$")[1] ? parseFloat(totalAPagarTexto.split("$")[1]) : 0;
+
+        if (totalAPagar > 0) {
+            document.getElementById('transferAmountToPay').value = totalAPagar;
+            document.getElementById('transferPaymentForm').submit();
+        } else {
+            alert("Por favor, seleccione al menos una cuota para pagar.");
+        }
+    });
 
 
 </script>
