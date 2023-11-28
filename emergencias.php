@@ -133,6 +133,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
 <div class="medical-record">
         <h2>Antecedentes Médicos (Enfermedades / Alergias)</h2>
         <!-- Formulario para agregar antecedentes médicos -->
+        <div class="table-responsive">
+
         <table class="table">
             <thead>
                 <tr>
@@ -162,6 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
             <?php endwhile; ?>
         </tbody>
     </table>
+            </div>
         <form method="post">
             <div class="form-group">
                 <label for="inputCategoria">Categoría</label>

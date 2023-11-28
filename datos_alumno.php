@@ -149,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
                 <button type="submit" class="btn btn-primary btn-block custom-button" name="actualizar">Actualizar</button>
             </form>
             <h2>Observaciones</h2>
+            <div class="table-responsive">
 <table class="table">
     <thead>
         <tr>
@@ -178,6 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
         <?php endwhile; ?>
     </tbody>
 </table>
+        </div>
 
 
 <form action="" method="post">
