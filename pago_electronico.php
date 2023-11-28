@@ -237,16 +237,23 @@ document.getElementById('payWithCard').addEventListener('click', function() {
 });
 
 document.getElementById('payWithTransfer').addEventListener('click', function() {
-        var totalAPagarTexto = document.querySelector('.total-pagar strong').textContent;
-        var totalAPagar = totalAPagarTexto.split("$")[1] ? parseFloat(totalAPagarTexto.split("$")[1]) : 0;
+    var totalAPagarTexto = document.querySelector('.total-pagar strong').textContent;
+    var totalAPagar = totalAPagarTexto.split("$")[1] ? parseFloat(totalAPagarTexto.split("$")[1]) : 0;
 
-        if (totalAPagar > 0) {
-            document.getElementById('transferAmountToPay').value = totalAPagar;
-            document.getElementById('transferPaymentForm').submit();
-        } else {
-            alert("Por favor, seleccione al menos una cuota para pagar.");
+    // Verificar si hay un monto total antes de proceder con el pago
+    if (totalAPagar > 0) {
+        if (totalAPagar > 50000) {
+            // Alertar al usuario si el monto excede el límite
+            alert("El monto total excede el límite de 50,000 CLP permitido por Khipu para una sola transacción.");
+            return;
         }
-    });
+        document.getElementById('transferAmountToPay').value = totalAPagar;
+        document.getElementById('transferPaymentForm').submit();
+    } else {
+        alert("Por favor, seleccione al menos una cuota para pagar.");
+    }
+});
+
 
 
 </script>
