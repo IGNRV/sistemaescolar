@@ -16,13 +16,17 @@ $placetopay = new PlacetoPay([
 ]);
 
 // Recuperar el requestId de la sesión
-// Suponiendo que se haya guardado en la sesión después de hacer la solicitud de pago
-$requestId = isset($_SESSION['requestId']) ? $_SESSION['requestId'] : null;
+$requestId = $_SESSION['requestId'] ?? null;
 
 if ($requestId) {
     $response = $placetopay->query($requestId);
 
     if ($response->isSuccessful()) {
+        // Muestra la información completa del estado del pago
+        echo "<pre>";
+        echo "Status: " . htmlspecialchars(json_encode($response->status(), JSON_PRETTY_PRINT));
+        echo "</pre>";
+
         if ($response->status()->isApproved()) {
             // El pago ha sido aprobado
             echo "Pago aprobado";
@@ -40,3 +44,4 @@ if ($requestId) {
 
 // No olvides limpiar la sesión una vez que ya no necesites el requestId
 unset($_SESSION['requestId']);
+?>

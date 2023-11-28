@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
 <?php endif; ?>
 
     <div class="titulo-container" style="background-color: blue; padding: 10px; display: flex; justify-content: center; align-items: center; height: 100%;">
-        <h1 class="text-center" style="color: white;">Datos del alumno</h1>
+        <h1 class="text-center" style="color: white; margin-bottom: 0px;">Datos del alumno</h1>
     </div>
             <!-- Formulario de datos del alumno -->
             <form action="" method="post">

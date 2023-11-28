@@ -88,24 +88,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
 
 
 ?>
+<style>
+    .emergency-contact h1 {
+        background-color: #007bff; /* Cambia esto al color azul que prefieras */
+        color: #ffffff; /* Cambia esto al color de texto que prefieras */
+        padding: 10px; /* Ajusta el espaciado interno según tus preferencias */
+        margin: 20px auto; /* Márgenes automáticos para centrar horizontalmente */
+        text-align: center; /* Centrar horizontalmente el texto */
+        line-height: 2; /* Ajusta la altura de línea para centrar verticalmente el texto */
+    }
+</style>
 <?php if (!empty($mensaje)): ?>
         <div class="alert alert-success" role="alert">
             <?php echo $mensaje; ?>
         </div>
     <?php endif; ?>
-    <style>
-    .emergency-contact h1 {
-        background-color: #007bff; /* Cambia esto al color azul que prefieras */
-        color: #ffffff; /* Cambia esto al color de texto que prefieras */
-        padding: 10px; /* Ajusta el espaciado interno según tus preferencias */
-        margin-bottom: 20px; /* Ajusta el margen inferior según tus preferencias */
-        text-align: center; /* Centrar horizontalmente el texto */
-        line-height: 2; /* Ajusta la altura de línea para centrar verticalmente el texto */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    </style>
+    
 <div class="emergency-contact">
     <h1>Contacto de emergencia</h1>
     <form method="post">
