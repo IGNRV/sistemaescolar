@@ -72,7 +72,9 @@ if (isset($_POST['eliminar'])) {
 $queryPadres = "SELECT * FROM padres_apoderados WHERE id_usuario = $id_usuario";
 $resultadoPadres = $conn->query($queryPadres);
 
-// Resto del código para mostrar la interfaz de usuario
+function rut($rut) {
+    return number_format(substr($rut, 0, -1), 0, "", ".") . '-' . substr($rut, strlen($rut) - 1, 1);
+}
 ?>
 
 
@@ -93,7 +95,7 @@ $resultadoPadres = $conn->query($queryPadres);
             <tbody>
                 <?php while($fila = $resultadoPadres->fetch_assoc()): ?>
                     <tr>
-                        <td><?php echo htmlspecialchars($fila['rut']); ?></td>
+                        <td><?php echo htmlspecialchars(rut($fila['rut'])); ?></td>
                         <td><?php echo htmlspecialchars($fila['nombre']) . " " . htmlspecialchars($fila['apellido_paterno']) . " " . htmlspecialchars($fila['apellido_materno']); ?></td>
                         <td><?php echo htmlspecialchars($fila['parentesco']); ?></td>
                         <td><?php echo htmlspecialchars($fila['correo_electronico_particular']) . "<br>" . htmlspecialchars($fila['correo_electronico_trabajo']); ?></td>
@@ -115,12 +117,8 @@ $resultadoPadres = $conn->query($queryPadres);
 
         <div class="form-group">
             <label for="rut">RUT</label>
-            <input type="text" class="form-control" name="rut">
+            <input type="text" class="form-control" name="rut" id="rut" maxlength="9">
         </div>
-      <!--   <div class="form-group">
-            <label for="fechaNacimiento">Fecha Nacimiento</label>
-            <input type="date" class="form-control" name="fechaNacimiento">
-        </div> -->
         <div class="form-group">
             <label for="parentesco">Parentesco</label>
             <input type="text" class="form-control" name="parentesco">
@@ -184,4 +182,11 @@ $resultadoPadres = $conn->query($queryPadres);
         <button type="submit" class="btn btn-primary btn-block custom-button" name="actualizar_datos">ACTUALIZAR DATOS</button>
 </form>
 </div>
- 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var inputRut = document.getElementById('rut');
+        inputRut.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    });
+</script>
