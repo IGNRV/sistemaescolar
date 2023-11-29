@@ -38,13 +38,49 @@ if ($resultadoUsuario->num_rows > 0) {
     exit;
 }
 
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Recoger los datos del formulario
+    $rut = $conn->real_escape_string($_POST['rut']);
+    $nombre = $conn->real_escape_string($_POST['nombre']);
+    $apellidoPaterno = $conn->real_escape_string($_POST['apellido_paterno']);
+    $apellidoMaterno = $conn->real_escape_string($_POST['apellido_materno']);
+    $telefonoParticular = $conn->real_escape_string($_POST['telefono_particular']);
+    $telefonoTrabajo = $conn->real_escape_string($_POST['telefono_trabajo']);
+    $calle = $conn->real_escape_string($_POST['calle']);
+    $nCalle = $conn->real_escape_string($_POST['n_calle']);
+    $restoDireccion = $conn->real_escape_string($_POST['resto_direccion']);
+    $villaPoblacion = $conn->real_escape_string($_POST['villa_poblacion']);
+    $comuna = $conn->real_escape_string($_POST['comuna']);
+    $ciudad = $conn->real_escape_string($_POST['ciudad']);
+    $correoElectronicoParticular = $conn->real_escape_string($_POST['correo_electronico_particular']);
+    $correoElectronicoTrabajo = $conn->real_escape_string($_POST['correo_electronico_trabajo']);
+
+    // Consulta SQL para actualizar los datos
+    $updateQuery = "UPDATE pagador_tutor_economico SET rut='$rut', nombre='$nombre', apellido_paterno='$apellidoPaterno', apellido_materno='$apellidoMaterno', telefono_particular='$telefonoParticular', telefono_trabajo='$telefonoTrabajo', calle='$calle', n_calle='$nCalle', resto_direccion='$restoDireccion', villa_poblacion='$villaPoblacion', comuna='$comuna', ciudad='$ciudad', correo_electronico_particular='$correoElectronicoParticular', correo_electronico_trabajo='$correoElectronicoTrabajo' WHERE id_usuario = $id_usuario";
+
+    if ($conn->query($updateQuery)) {
+        echo "Datos actualizados correctamente.";
+
+        // Vuelve a cargar los datos actualizados
+        $resultadoTutorEconomico = $conn->query($queryTutorEconomico);
+        if ($resultadoTutorEconomico->num_rows > 0) {
+            $tutorEconomico = $resultadoTutorEconomico->fetch_assoc();
+        } else {
+            $tutorEconomico = null;
+        }
+    } else {
+        echo "Error al actualizar los datos: " . $conn->error;
+    }
+}
+
+
 ?>
 <div class="tutor-economico">
     <h2>Datos tutor económico</h2>
-    <form>
+    <form method="post">
         <div class="form-group">
             <label for="rutTutor">RUT</label>
-            <input type="text" class="form-control" name="rut" id="rutTutor" value="<?php echo $tutorEconomico['rut'] ?? ''; ?>">
+            <input type="text" class="form-control" name="rut" id="rutTutor" value="<?php echo $tutorEconomico['rut'] ?? ''; ?>" maxlength="9">
         </div>
         <div class="form-group">
             <label for="nombresTutor">Nombre</label>
@@ -125,3 +161,11 @@ if ($resultadoUsuario->num_rows > 0) {
     </table>
     <button type="button" class="btn btn-primary btn-block custom-button">VER DETALLE</button>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var inputRut = document.getElementById('rutTutor');
+    inputRut.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+});
+</script>
