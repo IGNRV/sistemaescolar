@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
             <tr>
                 <td><?php echo htmlspecialchars($fila['categoria']); ?></td>
                 <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
-                <td><?php echo htmlspecialchars($fila['fecha']); ?></td>
+                <td><?php echo htmlspecialchars(date('d-m-Y', strtotime($fila['fecha']))); ?></td>
                 <td>
                     <form action="" method="post">
                         <input type="hidden" name="id_antecedente" value="<?php echo $fila['id']; ?>">
