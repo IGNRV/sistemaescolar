@@ -59,8 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $updateQuery = "UPDATE pagador_tutor_economico SET rut='$rut', nombre='$nombre', apellido_paterno='$apellidoPaterno', apellido_materno='$apellidoMaterno', telefono_particular='$telefonoParticular', telefono_trabajo='$telefonoTrabajo', calle='$calle', n_calle='$nCalle', resto_direccion='$restoDireccion', villa_poblacion='$villaPoblacion', comuna='$comuna', ciudad='$ciudad', correo_electronico_particular='$correoElectronicoParticular', correo_electronico_trabajo='$correoElectronicoTrabajo' WHERE id_usuario = $id_usuario";
 
     if ($conn->query($updateQuery)) {
-        echo "Datos actualizados correctamente.";
-
+        $mensaje = "Datos actualizados correctamente."; 
         // Vuelve a cargar los datos actualizados
         $resultadoTutorEconomico = $conn->query($queryTutorEconomico);
         if ($resultadoTutorEconomico->num_rows > 0) {
