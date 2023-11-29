@@ -147,7 +147,7 @@ function rut( $rut ) {
                 </div>
                 <div class="form-group">
                     <label>Email:</label>
-                    <input type="email" class="form-control" name="correo_electronico" value="<?php echo $alumno['correo_electronico']; ?>" disabled>
+                    <input type="email" class="form-control" name="correo_electronico" value="<?php echo $alumno['correo_electronico']; ?>">
                 </div>
                 <div class="form-group">
                     <label>Número de teléfono:</label>
