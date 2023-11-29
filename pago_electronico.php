@@ -137,7 +137,7 @@ function mostrarDatos(datos, idTabla) {
         
         // Agregar el input de tipo check si el estado de la cuota es 0
         var cellCheck = fila.insertCell(-1);
-        if (cuota.estado_cuota == 0) {
+        if (cuota.estado_cuota == 0 || cuota.estado_cuota == 1 ) {
             var inputCheck = document.createElement('input');
             inputCheck.type = 'checkbox';
             inputCheck.name = 'cuotaSeleccionada[]';
