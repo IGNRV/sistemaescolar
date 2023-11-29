@@ -81,6 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
     $updateQuery = "UPDATE contacto_emergencia SET rut='$rut', nombres='$nombres', apellido_paterno='$apellido_paterno', apellido_materno='$apellido_materno', telefono='$telefono', correo_electronico='$correo_electronico' WHERE id_usuario = $id_usuario";
     if ($conn->query($updateQuery) === TRUE) {
         $mensaje = "Contacto de emergencia actualizado correctamente.";
+    
+        // Realiza la consulta nuevamente para obtener datos actualizados
+        $resultadoContactoEmergencia = $conn->query($queryContactoEmergencia);
+        if ($resultadoContactoEmergencia->num_rows > 0) {
+            $contactoEmergencia = $resultadoContactoEmergencia->fetch_assoc();
+        }
     } else {
         $mensaje = "Error al actualizar el contacto de emergencia: " . $conn->error;
     }
@@ -98,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
     <form method="post">
             <div class="form-row">
                 <div class="form-group col-md-12">
-                    <label for="inputRUT">RUT</label>
+                    <label for="inputRUT">RUT (Sin puntos ni guion)</label>
                     <input type="text" name="rut" class="form-control" id="inputRUT" value="<?php echo $contactoEmergencia['rut'] ?? ''; ?>">
                 </div>
             </div>
@@ -133,8 +139,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
 <div class="medical-record">
         <h2>Antecedentes Médicos (Enfermedades / Alergias)</h2>
         <!-- Formulario para agregar antecedentes médicos -->
-        <div class="table-responsive">
-
         <table class="table">
             <thead>
                 <tr>
@@ -164,7 +168,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
             <?php endwhile; ?>
         </tbody>
     </table>
-            </div>
         <form method="post">
             <div class="form-group">
                 <label for="inputCategoria">Categoría</label>
@@ -183,3 +186,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['actualizar_contacto'])
         <!-- Tabla de antecedentes médicos -->
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var inputRut = document.getElementById('inputRUT');
+        
+        inputRut.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    });
+</script>

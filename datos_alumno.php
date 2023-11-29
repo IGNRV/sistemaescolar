@@ -81,7 +81,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
         $mensaje = "Error al eliminar la observación: " . $conn->error;
     }
 }
-// Resto del código existente...
+function rut( $rut ) {
+    return number_format( substr ( $rut, 0 , -1 ) , 0, "", ".") . '-' . substr ( $rut, strlen($rut) -1 , 1 );
+}
+
 ?>
 <?php if (!empty($mensaje)): ?>
     <div class="alert alert-success" role="alert">
@@ -98,14 +101,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
                     <input type="text" class="form-control" name="nombre" value="<?php echo $alumno['nombre']; ?>">
                 </div>
                 <div class="form-group">
-                    <label>Fecha de Nacimiento:</label>
-                    <input type="text" class="form-control" name="fecha_de_nacimiento" value="<?php echo $alumno['fecha_de_nacimiento']; ?>" disabled>
-                </div>
-                <div class="form-group">
-                    <label>RDA:</label>
-                    <input type="text" class="form-control" name="rda" value="<?php echo $alumno['rda']; ?>" disabled>
-                </div>
-                <div class="form-group">
                     <label>Apellido Paterno:</label>
                     <input type="text" class="form-control" name="apellido_paterno" value="<?php echo $alumno['apellido_paterno']; ?>" disabled>
                 </div>
@@ -113,6 +108,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
                     <label>Apellido Materno:</label>
                     <input type="text" class="form-control" name="apellido_materno" value="<?php echo $alumno['apellido_materno']; ?>" disabled>
                 </div>
+                <div class="form-group">
+                    <label>Fecha de Nacimiento:</label>
+                    <input type="text" class="form-control" name="fecha_de_nacimiento" value="<?php echo date('d-m-Y', strtotime($alumno['fecha_de_nacimiento'])); ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>RUT:</label>
+                    <input type="text" class="form-control" name="rut" value="<?php echo isset($alumno['rut']) ? rut($alumno['rut']) : ''; ?>" disabled>
+                </div>
+                <div class="form-group">
+                    <label>RDA:</label>
+                    <input type="text" class="form-control" name="rda" value="<?php echo $alumno['rda']; ?>" disabled>
+                </div>
+            
                 <div class="form-group">
                     <label>Calle:</label>
                     <input type="text" class="form-control" name="calle" value="<?php echo $alumno['calle']; ?>" disabled>
@@ -168,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['eliminar_observacion']
         <tr>
             <td><?php echo htmlspecialchars($fila['categoria']); ?></td>
             <td><?php echo htmlspecialchars($fila['descripcion']); ?></td>
-            <td><?php echo htmlspecialchars($fila['fecha']); ?></td>
+            <td><?php echo htmlspecialchars(date('d-m-Y', strtotime($fila['fecha']))); ?></td>
             <td>
                 <form action="" method="post" onsubmit="return confirmDelete();">
                     <input type="hidden" name="id_observacion" value="<?php echo $fila['id']; ?>">
