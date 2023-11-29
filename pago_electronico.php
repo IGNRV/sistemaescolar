@@ -265,20 +265,40 @@ document.getElementById('payWithCard').addEventListener('click', function() {
 document.getElementById('payWithTransfer').addEventListener('click', function() {
     var totalAPagarTexto = document.querySelector('.total-pagar strong').textContent;
     var totalAPagar = totalAPagarTexto.split("$")[1] ? parseFloat(totalAPagarTexto.split("$")[1]) : 0;
+    var rutAlumno = document.getElementById('rutAlumno').value;
 
-    // Verificar si hay un monto total antes de proceder con el pago
-    if (totalAPagar > 0) {
-        if (totalAPagar > 50000) {
-            // Alertar al usuario si el monto excede el límite
-            alert("El monto total excede el límite de 50,000 CLP permitido por Khipu para una sola transacción.");
-            return;
-        }
-        document.getElementById('transferAmountToPay').value = totalAPagar;
-        document.getElementById('transferPaymentForm').submit();
+    if (totalAPagar > 0 && rutAlumno) {
+        var cuotasSeleccionadas = document.querySelectorAll('input[name="cuotaSeleccionada[]"]:checked');
+        var datosPago = Array.from(cuotasSeleccionadas).map(function(checkbox) {
+            return {
+                idCuota: checkbox.value,
+                rutAlumno: rutAlumno,
+                monto: checkbox.closest('tr').cells[2].textContent, // Monto de la cuota
+                fechaCuota: checkbox.dataset.fecha // Fecha de vencimiento de la cuota
+            };
+        });
+
+        // Enviar solicitud AJAX al backend
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', 'procesar_pago.php', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                // Redirige al usuario a Khipu o muestra un mensaje de éxito/error
+                alert("Pago procesado con éxito. Redirigiendo a Khipu...");
+                document.getElementById('transferAmountToPay').value = totalAPagar;
+                document.getElementById('transferPaymentForm').submit();
+            } else {
+                alert("Error al procesar el pago.");
+            }
+        };
+        xhr.send(JSON.stringify({ pagos: datosPago, totalAPagar: totalAPagar }));
+
     } else {
-        alert("Por favor, seleccione al menos una cuota para pagar.");
+        alert("Por favor, seleccione al menos una cuota para pagar y asegúrese de haber buscado un alumno.");
     }
 });
+
 
 
 
