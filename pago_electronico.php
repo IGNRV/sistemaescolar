@@ -78,7 +78,7 @@
     </div>
 
     <div class="metodos-pago mt-3">
-        <button class="btn btn-success custom-button" id="payWithCard">Pagar con tarjeta CR/DB</button>
+        <button class="btn btn-success custom-button" id="payWithCard" style="display: none;">Pagar con tarjeta CR/DB</button>
         <button class="btn btn-info custom-button" id="payWithTransfer">Pagar con transferencia</button>
         <button class="btn btn-secondary custom-button">Agregar otro alumno</button>
     </div>
@@ -123,6 +123,9 @@ function mostrarDatos(datos, idTabla) {
     var tabla = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
     tabla.innerHTML = ''; // Limpiamos la tabla antes de agregar nuevos datos
 
+    datos.sort((a, b) => new Date(a.fecha_cuota_deuda) - new Date(b.fecha_cuota_deuda)); // Ordena los datos por fecha de vencimiento
+
+
     datos.forEach(function(cuota, index) {
         var fila = tabla.insertRow();
         fila.insertCell(-1).textContent = index + 1; // N° Cuota
@@ -130,7 +133,7 @@ function mostrarDatos(datos, idTabla) {
         fila.insertCell(-1).textContent = cuota.monto; // Monto
         fila.insertCell(-1).textContent = ''; // Medio de Pago (aquí va el valor correcto)
         fila.insertCell(-1).textContent = ''; // Fecha de Pago (aquí va el valor correcto)
-        fila.insertCell(-1).textContent = cuota.estado_cuota == 0 ? 'Pendiente' : 'Pagada'; // Estado
+        fila.insertCell(-1).textContent = cuota.estado_cuota == 0 ? 'VIGENTE' : (cuota.estado_cuota == 1 ? 'VENCIDA' : 'PAGADA'); // Estado
         
         // Agregar el input de tipo check si el estado de la cuota es 0
         var cellCheck = fila.insertCell(-1);
@@ -139,11 +142,34 @@ function mostrarDatos(datos, idTabla) {
             inputCheck.type = 'checkbox';
             inputCheck.name = 'cuotaSeleccionada[]';
             inputCheck.value = cuota.id;
+            inputCheck.dataset.fecha = cuota.fecha_cuota_deuda; // Agrega el atributo de fecha al checkbox
             cellCheck.appendChild(inputCheck);
         } else {
-            cellCheck.textContent = ''; // o cualquier otro valor que represente una celda vacía o con información relevante
+            cellCheck.textContent = '';
         }
     });
+
+    habilitarCheckbox(); // Llama a una nueva función para habilitar el primer checkbox
+}
+
+function habilitarCheckbox() {
+    var checkboxes = document.querySelectorAll('input[type="checkbox"][name="cuotaSeleccionada[]"]');
+    if (checkboxes.length > 0) {
+        checkboxes[0].disabled = false; // Habilita solo el primer checkbox
+
+        checkboxes.forEach(function(checkbox, index) {
+            if (index > 0) {
+                checkbox.disabled = true; // Deshabilita los demás checkboxes
+            }
+
+            // Evento para habilitar el siguiente checkbox cuando se marque el actual
+            checkbox.addEventListener('change', function() {
+                if (checkboxes[index + 1]) {
+                    checkboxes[index + 1].disabled = !checkbox.checked;
+                }
+            });
+        });
+    }
 }
 
 function seleccionarValores() {
