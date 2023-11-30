@@ -347,11 +347,22 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
 
     var datosPago = {
         tipoDocumento: document.getElementById('tipoDocumento').value,
-        montoEfectivo: parseFloat(document.getElementById('montoEfectivo').value) || 0,
+        montoEfectivo: montoEfectivo,
         fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
         rutAlumno: document.getElementById('rutAlumno').value,
-        idsCuotasSeleccionadas: idsCuotasSeleccionadas // Incluir los IDs de las cuotas seleccionadas
+        idsCuotasSeleccionadas: idsCuotasSeleccionadas
     };
+
+    // Añadir lógica para el pago con cheque
+    if (document.getElementById('cheque').checked) {
+        datosPago.tipoDocumentoCheque = document.getElementById('tipoDocumentoCheque').value;
+        datosPago.numeroDocumentoCheque = document.getElementById('numeroDocumentoCheque').value;
+        datosPago.fechaEmisionCheque = document.getElementById('fechaEmisionCheque').value;
+        datosPago.bancoCheque = document.getElementById('bancoCheque').value;
+        datosPago.montoCheque = montoCheque;
+        datosPago.fechaDepositoCheque = document.getElementById('fechaDepositoCheque').value;
+        // El resto de los datos se manejará en el servidor
+    }
 
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'registrar_pago.php', true);
@@ -359,7 +370,6 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
     xhr.onload = function() {
         if (this.status == 200) {
             alert("Respuesta del servidor: " + this.responseText);
-            // Recargar la página después de un pago exitoso
             window.location.reload();
         } else {
             alert("Error al procesar el pago.");
