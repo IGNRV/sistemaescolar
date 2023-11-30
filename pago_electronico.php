@@ -269,12 +269,16 @@ document.getElementById('payWithTransfer').addEventListener('click', function() 
 
     if (totalAPagar > 0 && rutAlumno) {
         var cuotasSeleccionadas = document.querySelectorAll('input[name="cuotaSeleccionada[]"]:checked');
+        var identificadorPago = 'pago_' + Date.now(); // Identificador único para el grupo de pagos
+        sessionStorage.setItem('identificadorPago', identificadorPago); 
+
         var datosPago = Array.from(cuotasSeleccionadas).map(function(checkbox) {
             return {
                 idCuota: checkbox.value,
                 rutAlumno: rutAlumno,
-                monto: checkbox.closest('tr').cells[2].textContent, // Monto de la cuota
-                fechaCuota: checkbox.dataset.fecha // Fecha de vencimiento de la cuota
+                monto: checkbox.closest('tr').cells[2].textContent,
+                fechaCuota: checkbox.dataset.fecha,
+                identificadorPago: identificadorPago // Agregar el identificador a los detalles de cada pago
             };
         });
 
@@ -284,7 +288,6 @@ document.getElementById('payWithTransfer').addEventListener('click', function() 
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function() {
             if (xhr.status === 200) {
-                // Redirige al usuario a Khipu o muestra un mensaje de éxito/error
                 alert("Pago procesado con éxito. Redirigiendo a Khipu...");
                 document.getElementById('transferAmountToPay').value = totalAPagar;
                 document.getElementById('transferPaymentForm').submit();
@@ -292,12 +295,12 @@ document.getElementById('payWithTransfer').addEventListener('click', function() 
                 alert("Error al procesar el pago.");
             }
         };
-        xhr.send(JSON.stringify({ pagos: datosPago, totalAPagar: totalAPagar }));
-
+        xhr.send(JSON.stringify({ pagos: datosPago, totalAPagar: totalAPagar, identificadorPago: identificadorPago }));
     } else {
         alert("Por favor, seleccione al menos una cuota para pagar y asegúrese de haber buscado un alumno.");
     }
 });
+
 
 
 
