@@ -43,11 +43,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Ejecutar la consulta
     if ($stmt->execute()) {
         echo "Pago registrado con éxito";
+
+        // Actualizar el estado de las cuotas seleccionadas
+        $idsCuotasSeleccionadas = $datos['idsCuotasSeleccionadas'];
+        foreach ($idsCuotasSeleccionadas as $idCuota) {
+            $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
+            $stmtCuota->bind_param("i", $idCuota);
+            $stmtCuota->execute();
+            $stmtCuota->close();
+        }
     } else {
         echo "Error: " . $stmt->error;
     }
 
-    // Cerrar la declaración y la conexión
     $stmt->close();
     $conn->close();
 } else {

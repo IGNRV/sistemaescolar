@@ -4,7 +4,7 @@ include 'db.php'; // Asegúrate de que la ruta sea correcta
 $rut = $_POST['rut'];
 $anioActual = date("Y");
 
-$sql = "SELECT cp.fecha_cuota_deuda, cp.monto, cp.estado_cuota, YEAR(cp.fecha_cuota_deuda) as año
+$sql = "SELECT cp.id, cp.fecha_cuota_deuda, cp.monto, cp.estado_cuota, YEAR(cp.fecha_cuota_deuda) as año
         FROM cuotas_pago AS cp
         LEFT JOIN alumno AS a ON a.id = cp.id_alumno
         WHERE a.rut = '$rut'";

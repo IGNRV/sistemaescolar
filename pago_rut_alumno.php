@@ -206,14 +206,18 @@
     }
 
     // Recolectar los datos de los métodos de pago
+    var idsCuotasSeleccionadas = Array.from(document.querySelectorAll('.cuota-checkbox:checked')).map(function(checkbox) {
+        return checkbox.getAttribute('data-id-cuota');
+    });
+
     var datosPago = {
         tipoDocumento: document.getElementById('tipoDocumento').value,
-        montoEfectivo: montoEfectivo,
+        montoEfectivo: parseFloat(document.getElementById('montoEfectivo').value) || 0,
         fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
-        rutAlumno: document.getElementById('rutAlumno').value
+        rutAlumno: document.getElementById('rutAlumno').value,
+        idsCuotasSeleccionadas: idsCuotasSeleccionadas // Incluir los IDs de las cuotas seleccionadas
     };
 
-    // Enviar los datos al script de backend
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'registrar_pago.php', true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
@@ -269,6 +273,7 @@ function actualizarTabla(datos, idTabla) {
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.classList.add('cuota-checkbox');
+        checkbox.setAttribute('data-id-cuota', cuota.id); // Agregar el ID de la cuota
         checkbox.value = cuota.monto;
 
         // Habilitar solo el primer checkbox no pagado y los siguientes en función del anterior
