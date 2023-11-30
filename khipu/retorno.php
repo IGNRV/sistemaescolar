@@ -11,22 +11,34 @@
     </style>
 </head>
 <body>
-    <?php
-    session_start();
-    require_once '../db.php';
-    
+<?php
+session_start();
+require_once '../db.php';
 
-    if (!isset($_GET['token']) || $_GET['token'] !== $_SESSION['payment_token']) {
-        header('Location: https://sistemaescolar.oralisisdataservice.cl/bienvenido.php');
-        exit;
+// Verificar el token de la sesión
+if (!isset($_GET['token']) || $_GET['token'] !== $_SESSION['payment_token']) {
+    header('Location: https://sistemaescolar.oralisisdataservice.cl/bienvenido.php');
+    exit;
+}
+
+// Actualizar el estado en la base de datos
+if (isset($_SESSION['identificador_pago'])) {
+    $identificadorPago = $_SESSION['identificador_pago'];
+
+    // Preparar la consulta para evitar problemas de inyección SQL
+    $stmt = $conn->prepare("UPDATE historial_de_pagos SET estado = 1 WHERE identificador_pago = ?");
+    $stmt->bind_param("s", $identificadorPago);
+
+    if ($stmt->execute() === FALSE) {
+        echo "Error al actualizar el estado: " . $conn->error;
     }
 
-    if (isset($_SESSION['identificador_pago'])) {
-        $identificadorPago = $_SESSION['identificador_pago'];
+    // Cerrar la declaración preparada
+    $stmt->close();
 
-        $query = "UPDATE historial_de_pagos SET estado = 1 WHERE identificador_pago = '$identificadorPago'";
-        $conn->query($query);
-    }
+    // Eliminar el identificador de la sesión después de usarlo
+    unset($_SESSION['identificador_pago']);
+}
     ?>
 
     <div class="container">
