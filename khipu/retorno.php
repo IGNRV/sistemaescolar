@@ -15,31 +15,34 @@
 session_start();
 require_once '../db.php';
 
-// Verificar el token de la sesión
 if (!isset($_GET['token']) || $_GET['token'] !== $_SESSION['payment_token']) {
     header('Location: https://sistemaescolar.oralisisdataservice.cl/bienvenido.php');
     exit;
 }
 
-// Actualizar el estado en la base de datos
-if (isset($_SESSION['identificador_pago'])) {
+if (isset($_SESSION['identificador_pago']) && isset($_SESSION['cuotas_seleccionadas'])) {
     $identificadorPago = $_SESSION['identificador_pago'];
+    $cuotasSeleccionadas = $_SESSION['cuotas_seleccionadas'];
 
-    // Preparar la consulta para evitar problemas de inyección SQL
     $stmt = $conn->prepare("UPDATE historial_de_pagos SET estado = 1 WHERE identificador_pago = ?");
     $stmt->bind_param("s", $identificadorPago);
-
     if ($stmt->execute() === FALSE) {
         echo "Error al actualizar el estado: " . $conn->error;
     }
-
-    // Cerrar la declaración preparada
     $stmt->close();
 
-    // Eliminar el identificador de la sesión después de usarlo
-    unset($_SESSION['identificador_pago']);
+    foreach ($cuotasSeleccionadas as $idCuota) {
+        $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
+        $stmtCuota->bind_param("i", $idCuota);
+        if ($stmtCuota->execute() === FALSE) {
+            echo "Error al actualizar estado_cuota: " . $conn->error;
+        }
+        $stmtCuota->close();
+    }
+
+    unset($_SESSION['identificador_pago'], $_SESSION['cuotas_seleccionadas']);
 }
-    ?>
+?>
 
     <div class="container">
         <div class="alert alert-success">

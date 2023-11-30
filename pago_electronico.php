@@ -288,7 +288,7 @@ document.getElementById('payWithTransfer').addEventListener('click', function() 
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function() {
             if (xhr.status === 200) {
-                alert("Pago procesado con éxito. Redirigiendo a Khipu...");
+                alert("Redirigiendo a Khipu...");
                 document.getElementById('transferAmountToPay').value = totalAPagar;
                 document.getElementById('transferPaymentForm').submit();
             } else {

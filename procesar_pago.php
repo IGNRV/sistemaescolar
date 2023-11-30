@@ -5,7 +5,9 @@ require_once 'db.php';
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data['pagos']) && is_array($data['pagos'])) {
-    $identificadorPago = $data['identificadorPago']; // Recuperar el identificador de pago
+    $identificadorPago = $data['identificadorPago'];
+
+    $_SESSION['cuotas_seleccionadas'] = array_column($data['pagos'], 'idCuota');
 
     foreach ($data['pagos'] as $pago) {
         $rutAlumno = $pago['rutAlumno'];
