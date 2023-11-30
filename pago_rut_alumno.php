@@ -118,7 +118,7 @@
                             </div>
                         </div>
                         <!-- Sección "PAGO CON CHEQUE" -->
-                        <div id="seccionPagoPos" class="mt-4" style="display:none;">
+                        <div id="seccionCheque" class="mt-4" style="display:none;">
                             <h4>PAGO CON CHEQUE</h4>
                             <div class="form-group">
                                 <label for="tipoDocumentoCheque">Tipo Documento</label>
@@ -146,7 +146,7 @@
                             </div>
                         </div>
                         <!-- Sección "PAGO CON TARJETA POS" -->
-                        <div id="seccionCheque" class="mt-4" style="display:none;">
+                        <div id="seccionPagoPos" class="mt-4" style="display:none;">
                             <h4>PAGO CON TARJETA POS</h4>
                             <div class="form-group">
                                 <label for="tipoDocumentoPos">Tipo Documento</label>
@@ -174,7 +174,8 @@
                             </div>
                         </div>
                         <!-- Botón "REGISTRAR PAGO" en azul -->
-                        <button type="button" class="btn btn-primary btn-block mt-4">REGISTRAR PAGO</button>
+<button type="button" class="btn btn-primary btn-block mt-4" id="btnRegistrarPago">REGISTRAR PAGO</button>
+
 
                     </form>
                 </div>   
@@ -190,6 +191,42 @@
 <!-- ... Resto del HTML anterior ... -->
 
 <script>
+    document.getElementById('btnRegistrarPago').addEventListener('click', function() {
+    var montoEfectivo = parseFloat(document.getElementById('montoEfectivo').value) || 0;
+    var montoCheque = parseFloat(document.getElementById('montoCheque').value) || 0;
+    var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
+
+    var totalMontoIngresado = montoEfectivo + montoCheque + montoPos;
+    var totalAPagarTexto = document.getElementById('totalAPagar').textContent;
+    var totalAPagar = parseFloat(totalAPagarTexto.split('$')[1]) || 0;
+
+    if (totalMontoIngresado !== totalAPagar) {
+        alert('La suma de los montos ingresados no es igual al total a pagar.');
+        return;
+    }
+
+    // Recolectar los datos de los métodos de pago
+    var datosPago = {
+        tipoDocumento: document.getElementById('tipoDocumento').value,
+        montoEfectivo: montoEfectivo,
+        fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
+        rutAlumno: document.getElementById('rutAlumno').value
+    };
+
+    // Enviar los datos al script de backend
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'registrar_pago.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function() {
+        if (this.status == 200) {
+            alert("Respuesta del servidor: " + this.responseText);
+        } else {
+            alert("Error al procesar el pago.");
+        }
+    };
+    xhr.send(JSON.stringify(datosPago));
+});
+
 document.getElementById('btnBuscarAlumno').addEventListener('click', function() {
     var rutAlumno = document.getElementById('rutAlumno').value;
     var xhr = new XMLHttpRequest();
@@ -276,6 +313,30 @@ function togglePaymentSections() {
 var metodosPago = document.querySelectorAll('input[name="metodoPago"]');
 metodosPago.forEach(function(metodo) {
     metodo.addEventListener('change', togglePaymentSections);
+});
+
+var metodosPago = document.querySelectorAll('input[name="metodoPago"]');
+metodosPago.forEach(function(metodo) {
+    metodo.addEventListener('change', togglePaymentSections);
+});
+
+// Manejador del evento click para el botón REGISTRAR PAGO
+document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', function() {
+    var montoEfectivo = parseFloat(document.getElementById('montoEfectivo').value) || 0;
+    var montoCheque = parseFloat(document.getElementById('montoCheque').value) || 0;
+    var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
+
+    var totalMontoIngresado = montoEfectivo + montoCheque + montoPos;
+
+    var totalAPagarTexto = document.getElementById('totalAPagar').textContent;
+    var totalAPagar = parseFloat(totalAPagarTexto.split('$')[1]) || 0;
+
+    if (totalMontoIngresado !== totalAPagar) {
+        alert('La suma de los montos ingresados no es igual al total a pagar.');
+        return;
+    }
+
+    // Aquí iría el código para procesar el pago si los montos coinciden
 });
 </script>
 
