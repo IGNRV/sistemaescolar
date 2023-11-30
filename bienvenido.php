@@ -148,6 +148,9 @@ include 'nav.php';
                 case 'vista_pago_automatico':
                     include 'vista_pago_automatico.php';
                     break;
+                case 'pago_rut_alumno':
+                    include 'pago_rut_alumno.php';
+                    break;
 
                 case 'inicio':
                 default:
