@@ -88,27 +88,21 @@
                             <h4 id="totalAPagar">Total a Pagar $</h4>
                             <h6>Seleccione Medio de Pago</h6>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="efectivo">
-                                <label class="form-check-label" for="efectivo">
-                                    Efectivo
-                                </label>
+                                <input class="form-check-input" type="checkbox" name="metodoPago" value="efectivo" id="efectivo">
+                                <label class="form-check-label" for="efectivo">Efectivo</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="pagoPos">
-                                <label class="form-check-label" for="pagoPos">
-                                    Pago Tarjeta POS
-                                </label>
+                                <input class="form-check-input" type="checkbox" name="metodoPago" value="pagoPos" id="pagoPos">
+                                <label class="form-check-label" for="pagoPos">Pago Tarjeta POS</label>
                             </div>
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" value="" id="cheque">
-                                <label class="form-check-label" for="cheque">
-                                    Cheque
-                                </label>
+                                <input class="form-check-input" type="checkbox" name="metodoPago" value="cheque" id="cheque">
+                                <label class="form-check-label" for="cheque">Cheque</label>
                             </div>
                         </div>
 
                         <!-- Sección "PAGO CON EFECTIVO" -->
-                        <div class="mt-4">
+                        <div id="seccionEfectivo" class="mt-4" style="display:none;">
                             <h4>PAGO CON EFECTIVO</h4>
                             <div class="form-group">
                                 <label for="tipoDocumento">Tipo Documento</label>
@@ -124,7 +118,7 @@
                             </div>
                         </div>
                         <!-- Sección "PAGO CON CHEQUE" -->
-                        <div class="mt-4">
+                        <div id="seccionPagoPos" class="mt-4" style="display:none;">
                             <h4>PAGO CON CHEQUE</h4>
                             <div class="form-group">
                                 <label for="tipoDocumentoCheque">Tipo Documento</label>
@@ -152,7 +146,7 @@
                             </div>
                         </div>
                         <!-- Sección "PAGO CON TARJETA POS" -->
-                        <div class="mt-4">
+                        <div id="seccionCheque" class="mt-4" style="display:none;">
                             <h4>PAGO CON TARJETA POS</h4>
                             <div class="form-group">
                                 <label for="tipoDocumentoPos">Tipo Documento</label>
@@ -193,6 +187,8 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- ... Resto del HTML anterior ... -->
+
 <script>
 document.getElementById('btnBuscarAlumno').addEventListener('click', function() {
     var rutAlumno = document.getElementById('rutAlumno').value;
@@ -203,7 +199,6 @@ document.getElementById('btnBuscarAlumno').addEventListener('click', function() 
         if (this.status == 200) {
             var response = JSON.parse(this.responseText);
             if(response.encontrado){
-                alert('Rut encontrado');
                 actualizarTabla(response.datosAnterior, 'tablaSaldoPeriodoAnterior');
                 actualizarTabla(response.datosActual, 'tablaCuotasPeriodoActual');
             } else {
@@ -218,45 +213,49 @@ function actualizarTabla(datos, idTabla) {
     var tbody = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
     tbody.innerHTML = ''; // Limpiar la tabla actual
 
-    var contador = 1;
-    datos.forEach(function(cuota) {
+    // Ordenar los datos por fecha de vencimiento
+    datos.sort((a, b) => new Date(a.fecha_cuota_deuda) - new Date(b.fecha_cuota_deuda));
+
+    var checkboxAnteriorHabilitado = true; // Indica si el checkbox anterior está habilitado
+
+    datos.forEach(function(cuota, index) {
         var row = tbody.insertRow();
-        row.insertCell(0).innerHTML = contador++; // N° Cuota
+        row.insertCell(0).innerHTML = index + 1; // N° Cuota
         row.insertCell(1).innerHTML = cuota.fecha_cuota_deuda; // Fecha Vencimiento
         row.insertCell(2).innerHTML = cuota.monto; // Monto
-        // Asegúrate de que esta celda está vacía o contiene el dato correcto para 'Medio de Pago'
         row.insertCell(3).innerHTML = ''; // Medio de Pago
-        // Asegúrate de que esta celda está vacía o contiene el dato correcto para 'Fecha de Pago'
         row.insertCell(4).innerHTML = ''; // Fecha de Pago
+        var estado = cuota.estado_cuota === '0' ? 'VIGENTE' : (cuota.estado_cuota === '1' ? 'VENCIDA' : 'PAGADA');
+        row.insertCell(5).innerHTML = estado; // Estado
 
-        // Asignar texto según el estado de la cuota
-        var estadoTexto = '';
-        switch(cuota.estado_cuota) {
-            case '0':
-                estadoTexto = 'VIGENTE';
-                break;
-            case '1':
-                estadoTexto = 'VENCIDA';
-                break;
-            case '2':
-                estadoTexto = 'PAGADA';
-                break;
-        }
-        row.insertCell(5).innerHTML = estadoTexto; // Estado
-
-        // Asegúrate de que esta celda está vacía o contiene el dato correcto para 'Seleccione Valor a Pagar'
-        row.insertCell(6).innerHTML = ''; // Seleccione Valor a Pagar
-
-        var cell = row.insertCell(6); // Celda para el checkbox
+        var cellCheck = row.insertCell(6); // Celda para el checkbox
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
-        checkbox.classList.add('cuota-checkbox'); // Clase para identificar el checkbox
-        checkbox.value = cuota.monto; // Asignar el monto como valor del checkbox
-        cell.appendChild(checkbox); // Agregar el checkbox a la celda
+        checkbox.classList.add('cuota-checkbox');
+        checkbox.value = cuota.monto;
+
+        // Habilitar solo el primer checkbox no pagado y los siguientes en función del anterior
+        checkbox.disabled = !checkboxAnteriorHabilitado || cuota.estado_cuota === '2';
+        if (cuota.estado_cuota !== '2') {
+            checkboxAnteriorHabilitado = false;
+        }
+        
+        cellCheck.appendChild(checkbox);
+    });
+
+    // Añadir evento para habilitar el siguiente checkbox
+    var checkboxes = document.querySelectorAll('.cuota-checkbox');
+    checkboxes.forEach(function(checkbox, index) {
+        checkbox.addEventListener('change', function() {
+            if (index < checkboxes.length - 1) {
+                checkboxes[index + 1].disabled = !checkbox.checked;
+            }
+        });
     });
 }
+
 document.getElementById('btnSeleccionarValores').addEventListener('click', function() {
-    var checkboxes = document.querySelectorAll('.cuota-checkbox:checked'); // Seleccionar solo los checkboxes marcados
+    var checkboxes = document.querySelectorAll('.cuota-checkbox:checked');
     var total = 0;
     checkboxes.forEach(function(checkbox) {
         total += parseFloat(checkbox.value);
@@ -264,8 +263,24 @@ document.getElementById('btnSeleccionarValores').addEventListener('click', funct
     document.getElementById('totalAPagar').textContent = 'Total a Pagar $ ' + total.toFixed(2);
 });
 
+function togglePaymentSections() {
+    var efectivoChecked = document.getElementById('efectivo').checked;
+    var pagoPosChecked = document.getElementById('pagoPos').checked;
+    var chequeChecked = document.getElementById('cheque').checked;
 
+    document.getElementById('seccionEfectivo').style.display = efectivoChecked ? 'block' : 'none';
+    document.getElementById('seccionPagoPos').style.display = pagoPosChecked ? 'block' : 'none';
+    document.getElementById('seccionCheque').style.display = chequeChecked ? 'block' : 'none';
+}
+
+var metodosPago = document.querySelectorAll('input[name="metodoPago"]');
+metodosPago.forEach(function(metodo) {
+    metodo.addEventListener('change', togglePaymentSections);
+});
 </script>
+
+<!-- ... Resto del HTML ... -->
+
 
 
 
