@@ -218,7 +218,7 @@
         idsCuotasSeleccionadas: idsCuotasSeleccionadas // Incluir los IDs de las cuotas seleccionadas
     };
 
-    var xhr = new XMLHttpRequest();
+    /* var xhr = new XMLHttpRequest();
     xhr.open('POST', 'registrar_pago.php', true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
     xhr.onload = function() {
@@ -228,7 +228,7 @@
             alert("Error al procesar el pago.");
         }
     };
-    xhr.send(JSON.stringify(datosPago));
+    xhr.send(JSON.stringify(datosPago)); */
 });
 
 document.getElementById('btnBuscarAlumno').addEventListener('click', function() {
@@ -332,7 +332,6 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
     var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
 
     var totalMontoIngresado = montoEfectivo + montoCheque + montoPos;
-
     var totalAPagarTexto = document.getElementById('totalAPagar').textContent;
     var totalAPagar = parseFloat(totalAPagarTexto.split('$')[1]) || 0;
 
@@ -341,16 +340,33 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
         return;
     }
 
-    // Aquí iría el código para procesar el pago si los montos coinciden
+    // Recolectar los datos de los métodos de pago
+    var idsCuotasSeleccionadas = Array.from(document.querySelectorAll('.cuota-checkbox:checked')).map(function(checkbox) {
+        return checkbox.getAttribute('data-id-cuota');
+    });
+
+    var datosPago = {
+        tipoDocumento: document.getElementById('tipoDocumento').value,
+        montoEfectivo: parseFloat(document.getElementById('montoEfectivo').value) || 0,
+        fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
+        rutAlumno: document.getElementById('rutAlumno').value,
+        idsCuotasSeleccionadas: idsCuotasSeleccionadas // Incluir los IDs de las cuotas seleccionadas
+    };
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'registrar_pago.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+    xhr.onload = function() {
+        if (this.status == 200) {
+            alert("Respuesta del servidor: " + this.responseText);
+            // Recargar la página después de un pago exitoso
+            window.location.reload();
+        } else {
+            alert("Error al procesar el pago.");
+        }
+    };
+    xhr.send(JSON.stringify(datosPago));
 });
 </script>
-
-<!-- ... Resto del HTML ... -->
-
-
-
-
-
-
 </body>
 </html>
