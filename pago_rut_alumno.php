@@ -238,6 +238,7 @@ document.getElementById('btnBuscarAlumno').addEventListener('click', function() 
             if(response.encontrado){
                 actualizarTabla(response.datosAnterior, 'tablaSaldoPeriodoAnterior');
                 actualizarTabla(response.datosActual, 'tablaCuotasPeriodoActual');
+                actualizarEstadosDeCuotasVencidas(rutAlumno); // Nueva función para actualizar el estado
             } else {
                 alert('Rut no encontrado');
             }
@@ -245,6 +246,19 @@ document.getElementById('btnBuscarAlumno').addEventListener('click', function() 
     };
     xhr.send('rut=' + rutAlumno);
 });
+
+// Nueva función para actualizar los estados de las cuotas vencidas
+function actualizarEstadosDeCuotasVencidas(rutAlumno) {
+    var xhrActualizar = new XMLHttpRequest();
+    xhrActualizar.open('POST', 'actualizar_cuotas_vencidas.php', true);
+    xhrActualizar.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhrActualizar.onload = function() {
+        if (this.status == 200) {
+            console.log("Cuotas actualizadas: " + this.responseText);
+        }
+    };
+    xhrActualizar.send('rut=' + rutAlumno);
+}
 
 function actualizarTabla(datos, idTabla) {
     var tbody = document.getElementById(idTabla).getElementsByTagName('tbody')[0];
