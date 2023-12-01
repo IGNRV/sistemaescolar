@@ -52,7 +52,8 @@ function insertarPago($conn, $datos, $tipoPago) {
     if ($tipoPago == 1) { // Pago en efectivo
         $stmt->bind_param("sdssiiiiisss", $datos['tipoDocumento'], $datos['montoEfectivo'], $datos['fechaPagoEfectivo'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $folioPago, $datos['fechaPagoEfectivo'], $datos['fechaPagoEfectivo']);
     } else if ($tipoPago == 3) { // Pago con cheque
-        $stmt->bind_param("sdssiiiiisss", $datos['tipoDocumentoCheque'], $datos['montoCheque'], $datos['fechaDepositoCheque'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $datos['numeroDocumentoCheque'], $datos['fechaEmisionCheque'], $datos['fechaDepositoCheque']);
+        $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro, banco) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sdssiiiiissss", $datos['tipoDocumentoCheque'], $datos['montoCheque'], $datos['fechaDepositoCheque'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $datos['numeroDocumentoCheque'], $datos['fechaEmisionCheque'], $datos['fechaDepositoCheque'], $datos['bancoCheque']);
     } else if ($tipoPago == 2) { // Pago con tarjeta POS
         $tipoDocumentoPos = $datos['tipoDocumentoPos'] ?? '';
         $montoPos = $datos['montoPos'] ?? 0;
@@ -62,7 +63,9 @@ function insertarPago($conn, $datos, $tipoPago) {
         $cuotasPos = $datos['cuotasPos'] ?? '';
         $fechaActual = date('Y-m-d');
 
-        $stmt->bind_param("sdssiiiiisss", $tipoDocumentoPos, $montoPos, $fechaPagoPos, $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoTarjetaPos, $estado, $comprobantePos, $fechaActual, $fechaActual);
+        $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro, n_cuotas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("sdssiiiiisssi", $tipoDocumentoPos, $montoPos, $fechaPagoPos, $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoTarjetaPos, $estado, $comprobantePos, $fechaActual, $fechaActual, $datos['cuotasPos']);
+
     }
 
 

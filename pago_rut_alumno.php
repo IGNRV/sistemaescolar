@@ -372,10 +372,9 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
         datosPago.tipoDocumentoCheque = document.getElementById('tipoDocumentoCheque').value;
         datosPago.numeroDocumentoCheque = document.getElementById('numeroDocumentoCheque').value;
         datosPago.fechaEmisionCheque = document.getElementById('fechaEmisionCheque').value;
-        datosPago.bancoCheque = document.getElementById('bancoCheque').value;
+        datosPago.bancoCheque = document.getElementById('bancoCheque').value; // Se recoge el valor del banco
         datosPago.montoCheque = montoCheque;
         datosPago.fechaDepositoCheque = document.getElementById('fechaDepositoCheque').value;
-        // El resto de los datos se manejará en el servidor
     }
 
     if (document.getElementById('pagoPos').checked) {
@@ -384,7 +383,8 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
         datosPago.fechaPagoPos = document.getElementById('fechaPagoPos').value;
         datosPago.comprobantePos = document.getElementById('comprobantePos').value;
         datosPago.tipoTarjetaPos = document.getElementById('tipoTarjetaPos').value;
-        datosPago.cuotasPos = document.getElementById('cuotasPos').value;
+        datosPago.cuotasPos = parseInt(document.getElementById('cuotasPos').value) || 0; // Aquí se añade el número de cuotas
+
     }
 
     var xhr = new XMLHttpRequest();
