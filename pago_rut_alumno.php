@@ -198,9 +198,9 @@
     document.getElementById('btnRegistrarPago').addEventListener('click', function() {
     var montoEfectivo = parseFloat(document.getElementById('montoEfectivo').value) || 0;
     var montoCheque = parseFloat(document.getElementById('montoCheque').value) || 0;
-    // ... otros métodos de pago ...
+    var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
 
-    var totalMontoIngresado = montoEfectivo + montoCheque; // + otros montos si existen
+    var totalMontoIngresado = montoEfectivo + montoCheque + montoPos; // + otros montos si existen
     var totalAPagarTexto = document.getElementById('totalAPagar').textContent;
     var totalAPagar = parseFloat(totalAPagarTexto.split('$')[1]) || 0;
 
