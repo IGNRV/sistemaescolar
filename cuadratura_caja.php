@@ -61,6 +61,8 @@
 
                     <!-- Tabla de Pago con Efectivo -->
                     <div class="table-responsive mt-4">
+                    <!-- Título personalizado con un ID para mostrar el total recaudado -->
+                        <h2 class="text-center custom-title" id="totalRecaudado">TOTAL RECAUDADO $</h2>
                         <h4 class="section-title">PAGO CON EFECTIVO</h4>
                         <table class="table table-bordered">
                             <thead>
@@ -73,7 +75,7 @@
                                     <th>RUT Alumno</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="tablaEfectivo">
                                 <!-- Agrega filas de datos según tus necesidades -->
                                 <tr>
                                     <td>Fecha de Pago</td>
@@ -219,23 +221,29 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
     document.getElementById('btnBuscar').addEventListener('click', function() {
-        var fecha = document.getElementById('fecha').value;
-        var medioPago = document.getElementById('medioPago').value;
+    var fecha = document.getElementById('fecha').value;
+    var medioPago = document.getElementById('medioPago').value;
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'busca_pagos.php?fecha=' + fecha + '&medioPago=' + medioPago, true);
-        xhr.onload = function() {
-            if (this.status == 200 && this.responseText != '') {
-                // Procesar la respuesta y actualizar la tabla
-                alert('Se han encontrado datos');
-                // Aquí puedes actualizar la tabla con los datos recibidos
-                // Por ejemplo: document.getElementById('idDeLaTabla').innerHTML = this.responseText;
-            } else {
-                alert('No se han encontrado datos');
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', 'busca_pagos.php?fecha=' + fecha + '&medioPago=' + medioPago, true);
+    xhr.onload = function() {
+        if (this.status == 200 && this.responseText != '') {
+            document.getElementById('tablaEfectivo').innerHTML = this.responseText;
+            // Actualizar el total recaudado
+            var totalRecaudadoElement = document.querySelector('.totalRecaudado');
+            if (totalRecaudadoElement) {
+                var totalRecaudado = totalRecaudadoElement.getAttribute('data-total');
+                document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalRecaudado;
             }
-        };
-        xhr.send();
-    });
+        } else {
+            document.getElementById('tablaEfectivo').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
+            document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $0';
+        }
+    };
+    xhr.send();
+});
+
+
 </script>
 
 
