@@ -59,7 +59,7 @@ function insertarPago($conn, $datos, $tipoPago) {
         $montoPos = $datos['montoPos'] ?? 0;
         $fechaPagoPos = $datos['fechaPagoPos'] ?? '';
         $comprobantePos = $datos['comprobantePos'] ?? '';
-        $tipoTarjetaPos = $datos['tipoTarjetaPos'] ?? '';
+        $tipoTarjetaPos = 2;
         $cuotasPos = $datos['cuotasPos'] ?? '';
         $fechaActual = date('Y-m-d');
 

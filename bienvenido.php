@@ -151,6 +151,9 @@ include 'nav.php';
                 case 'pago_rut_alumno':
                     include 'pago_rut_alumno.php';
                     break;
+                case 'cuadratura_caja':
+                    include 'cuadratura_caja.php';
+                    break;
 
                 case 'inicio':
                 default:

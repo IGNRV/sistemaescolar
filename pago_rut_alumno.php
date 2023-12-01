@@ -29,7 +29,7 @@
                         
                         <!-- Campo RUT del padre/poderado -->
                         <div class="form-group">
-                            <label for="rutPadre">RUT del Padre/Poderado</label>
+                            <label for="rutPadre">RUT del Padre/Apoderado</label>
                             <input type="text" class="form-control" id="rutPadre" placeholder="Ingrese el RUT del Padre/Apoderado">
                         </div>
 
