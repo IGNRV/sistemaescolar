@@ -47,16 +47,16 @@
                         <div class="form-group">
                             <label for="medioPago">Medio de Pago</label>
                             <select class="form-control" id="medioPago">
-                                <option value="efectivo">Efectivo</option>
-                                <option value="tarjeta">Tarjeta de Crédito</option>
-                                <option value="transferencia">Tarjeta POS</option>
-                                <option value="khipu">Khipu</option>
+                                <option value="1">Efectivo</option>
+                                <option value="3">Cheque</option>
+                                <option value="2">Tarjeta POS</option>
+                                <option value="4">Khipu</option>
                                 <!-- Agrega más opciones según sea necesario -->
                             </select>
                         </div>
 
                         <!-- Botón para realizar la cuadratura -->
-                        <button type="submit" class="btn btn-primary btn-block">Buscar</button>
+                        <button type="button" class="btn btn-primary btn-block" id="btnBuscar">Buscar</button>
                     </form>
 
                     <!-- Tabla de Pago con Efectivo -->
@@ -217,6 +217,27 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script>
+    document.getElementById('btnBuscar').addEventListener('click', function() {
+        var fecha = document.getElementById('fecha').value;
+        var medioPago = document.getElementById('medioPago').value;
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'busca_pagos.php?fecha=' + fecha + '&medioPago=' + medioPago, true);
+        xhr.onload = function() {
+            if (this.status == 200 && this.responseText != '') {
+                // Procesar la respuesta y actualizar la tabla
+                alert('Se han encontrado datos');
+                // Aquí puedes actualizar la tabla con los datos recibidos
+                // Por ejemplo: document.getElementById('idDeLaTabla').innerHTML = this.responseText;
+            } else {
+                alert('No se han encontrado datos');
+            }
+        };
+        xhr.send();
+    });
+</script>
+
 
 </body>
 </html>
