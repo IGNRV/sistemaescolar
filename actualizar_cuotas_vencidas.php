@@ -1,6 +1,5 @@
 <?php
 include 'db.php';
-ini_set('display_errors', 1);
 $rut = $_POST['rut'];
 $fechaActual = date("Y-m-d");
 

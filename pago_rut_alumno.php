@@ -166,7 +166,11 @@
                             </div>
                             <div class="form-group">
                                 <label for="tipoTarjetaPos">Tipo Tarjeta</label>
-                                <input type="text" class="form-control" id="tipoTarjetaPos" placeholder="Ingrese el tipo de tarjeta">
+                                <select class="form-control" id="tipoTarjetaPos">
+                                    <option value="-">Selecciona un tipo de tarjeta</option>
+                                    <option value="credito">Tarjeta Crédito</option>
+                                    <option value="debito">Tarjeta Débito</option>
+                                </select>
                             </div>
                             <div class="form-group">
                                 <label for="cuotasPos">Cantidad de Cuotas</label>
