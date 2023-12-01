@@ -19,6 +19,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         insertarPago($conn, $datos, 3); // 3 para cheque
     }
 
+    $montoPos = $datos['montoPos'] ?? 0;
+
+    if ($montoPos > 0) {
+        insertarPago($conn, $datos, 2); // 2 para pago con tarjeta POS
+    }
+
     foreach ($idsCuotasSeleccionadas as $idCuota) {
         $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
         $stmtCuota->bind_param("i", $idCuota);
@@ -47,7 +53,18 @@ function insertarPago($conn, $datos, $tipoPago) {
         $stmt->bind_param("sdssiiiiisss", $datos['tipoDocumento'], $datos['montoEfectivo'], $datos['fechaPagoEfectivo'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $folioPago, $datos['fechaPagoEfectivo'], $datos['fechaPagoEfectivo']);
     } else if ($tipoPago == 3) { // Pago con cheque
         $stmt->bind_param("sdssiiiiisss", $datos['tipoDocumentoCheque'], $datos['montoCheque'], $datos['fechaDepositoCheque'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $datos['numeroDocumentoCheque'], $datos['fechaEmisionCheque'], $datos['fechaDepositoCheque']);
+    } else if ($tipoPago == 2) { // Pago con tarjeta POS
+        $tipoDocumentoPos = $datos['tipoDocumentoPos'] ?? '';
+        $montoPos = $datos['montoPos'] ?? 0;
+        $fechaPagoPos = $datos['fechaPagoPos'] ?? '';
+        $comprobantePos = $datos['comprobantePos'] ?? '';
+        $tipoTarjetaPos = $datos['tipoTarjetaPos'] ?? '';
+        $cuotasPos = $datos['cuotasPos'] ?? '';
+        $fechaActual = date('Y-m-d');
+
+        $stmt->bind_param("sdssiiiiisss", $tipoDocumentoPos, $montoPos, $fechaPagoPos, $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoTarjetaPos, $estado, $comprobantePos, $fechaActual, $fechaActual);
     }
+
 
     if (!$stmt->execute()) {
         echo "Error: " . $stmt->error;

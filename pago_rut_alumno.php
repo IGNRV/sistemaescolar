@@ -378,6 +378,15 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
         // El resto de los datos se manejará en el servidor
     }
 
+    if (document.getElementById('pagoPos').checked) {
+        datosPago.tipoDocumentoPos = document.getElementById('tipoDocumentoPos').value;
+        datosPago.montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
+        datosPago.fechaPagoPos = document.getElementById('fechaPagoPos').value;
+        datosPago.comprobantePos = document.getElementById('comprobantePos').value;
+        datosPago.tipoTarjetaPos = document.getElementById('tipoTarjetaPos').value;
+        datosPago.cuotasPos = document.getElementById('cuotasPos').value;
+    }
+
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'registrar_pago.php', true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
