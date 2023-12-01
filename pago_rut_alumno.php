@@ -194,9 +194,9 @@
     document.getElementById('btnRegistrarPago').addEventListener('click', function() {
     var montoEfectivo = parseFloat(document.getElementById('montoEfectivo').value) || 0;
     var montoCheque = parseFloat(document.getElementById('montoCheque').value) || 0;
-    var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
+    // ... otros métodos de pago ...
 
-    var totalMontoIngresado = montoEfectivo + montoCheque + montoPos;
+    var totalMontoIngresado = montoEfectivo + montoCheque; // + otros montos si existen
     var totalAPagarTexto = document.getElementById('totalAPagar').textContent;
     var totalAPagar = parseFloat(totalAPagarTexto.split('$')[1]) || 0;
 
@@ -212,23 +212,19 @@
 
     var datosPago = {
         tipoDocumento: document.getElementById('tipoDocumento').value,
-        montoEfectivo: parseFloat(document.getElementById('montoEfectivo').value) || 0,
+        montoEfectivo: montoEfectivo,
         fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
+        montoCheque: montoCheque, // Incluir monto y detalles del cheque
+        tipoDocumentoCheque: document.getElementById('tipoDocumentoCheque').value,
+        numeroDocumentoCheque: document.getElementById('numeroDocumentoCheque').value,
+        fechaEmisionCheque: document.getElementById('fechaEmisionCheque').value,
+        bancoCheque: document.getElementById('bancoCheque').value,
+        fechaDepositoCheque: document.getElementById('fechaDepositoCheque').value,
         rutAlumno: document.getElementById('rutAlumno').value,
-        idsCuotasSeleccionadas: idsCuotasSeleccionadas // Incluir los IDs de las cuotas seleccionadas
+        idsCuotasSeleccionadas: idsCuotasSeleccionadas
     };
 
-    /* var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'registrar_pago.php', true);
-    xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-    xhr.onload = function() {
-        if (this.status == 200) {
-            alert("Respuesta del servidor: " + this.responseText);
-        } else {
-            alert("Error al procesar el pago.");
-        }
-    };
-    xhr.send(JSON.stringify(datosPago)); */
+    // Código para enviar datosPago al servidor...
 });
 
 document.getElementById('btnBuscarAlumno').addEventListener('click', function() {

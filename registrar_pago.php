@@ -1,76 +1,57 @@
 <?php
-include 'db.php'; // Incluye el script de conexión a la base de datos
+include 'db.php';
 ini_set('display_errors', 1);
-// Asegurarse de que el método de solicitud es POST
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtiene los datos enviados desde el frontend
     $contenido = file_get_contents("php://input");
     $datos = json_decode($contenido, true);
 
-    // Extraer los datos necesarios
-    $tipoDocumento = $datos['tipoDocumento'] ?? '';
-    $montoEfectivo = $datos['montoEfectivo'] ?? 0;
-    $fechaPagoEfectivo = $datos['fechaPagoEfectivo'] ?? '';
     $rutAlumno = $datos['rutAlumno'] ?? '';
+    $idsCuotasSeleccionadas = $datos['idsCuotasSeleccionadas'] ?? [];
 
-    // Inicializar variables para el cheque si están presentes
-    $tipoDocumentoCheque = $datos['tipoDocumentoCheque'] ?? '';
-    $numeroDocumentoCheque = $datos['numeroDocumentoCheque'] ?? '';
-    $fechaEmisionCheque = $datos['fechaEmisionCheque'] ?? '';
-    $bancoCheque = $datos['bancoCheque'] ?? '';
-    $montoCheque = $datos['montoCheque'] ?? 0;
-    $fechaDepositoCheque = $datos['fechaDepositoCheque'] ?? '';
-
-    // Extraer el año de la fecha de pago o depósito de cheque
-    $ano = $fechaPagoEfectivo ? date('Y', strtotime($fechaPagoEfectivo)) : date('Y', strtotime($fechaDepositoCheque));
-
-    // Consulta SQL para obtener el último folio_pago y numero_documento
-    $consultaFolio = "SELECT MAX(folio_pago) as ultimo_folio FROM historial_de_pagos";
-    $resultado = $conn->query($consultaFolio);
-
-    if ($resultado->num_rows > 0) {
-        $fila = $resultado->fetch_assoc();
-        $folioPago = $fila['ultimo_folio'] + 1;
-    } else {
-        // Si no hay registros previos, iniciar desde 1
-        $folioPago = 1;
+    $montoEfectivo = $datos['montoEfectivo'] ?? 0;
+    if ($montoEfectivo > 0) {
+        insertarPago($conn, $datos, 1); // 1 para efectivo
     }
 
-    // Determinar el medio de pago
-    $medioDePago = $montoEfectivo > 0 ? 1 : ($montoCheque > 0 ? 3 : 0); // 1: Efectivo, 3: Cheque
+    $montoCheque = $datos['montoCheque'] ?? 0;
+    if ($montoCheque > 0) {
+        insertarPago($conn, $datos, 3); // 3 para cheque
+    }
 
-    // Preparar la consulta SQL para insertar en la base de datos
-    $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    foreach ($idsCuotasSeleccionadas as $idCuota) {
+        $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
+        $stmtCuota->bind_param("i", $idCuota);
+        $stmtCuota->execute();
+        $stmtCuota->close();
+    }
+
+    echo "Pago registrado con éxito";
+    $conn->close();
+} else {
+    echo "Método de solicitud no válido";
+}
+
+function insertarPago($conn, $datos, $tipoPago) {
+    $ano = date('Y');
+    $consultaFolio = "SELECT MAX(folio_pago) as ultimo_folio FROM historial_de_pagos";
+    $resultado = $conn->query($consultaFolio);
+    $folioPago = ($resultado->num_rows > 0) ? $resultado->fetch_assoc()['ultimo_folio'] + 1 : 1;
 
     $codigoProducto = 1; // Código del producto
     $estado = 1; // Estado del pago
 
-    // Vincular los parámetros
-    if ($medioDePago == 1) { // Pago en efectivo
-        $stmt->bind_param("sdssiiiiisss", $tipoDocumento, $montoEfectivo, $fechaPagoEfectivo, $ano, $rutAlumno, $codigoProducto, $folioPago, $medioDePago, $estado, $folioPago, $fechaPagoEfectivo, $fechaPagoEfectivo);
-    } else if ($medioDePago == 3) { // Pago con cheque
-        $stmt->bind_param("sdssiiiiisss", $tipoDocumentoCheque, $montoCheque, $fechaDepositoCheque, $ano, $rutAlumno, $codigoProducto, $folioPago, $medioDePago, $estado, $numeroDocumentoCheque, $fechaEmisionCheque, $fechaDepositoCheque);
+    $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+    if ($tipoPago == 1) { // Pago en efectivo
+        $stmt->bind_param("sdssiiiiisss", $datos['tipoDocumento'], $datos['montoEfectivo'], $datos['fechaPagoEfectivo'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $folioPago, $datos['fechaPagoEfectivo'], $datos['fechaPagoEfectivo']);
+    } else if ($tipoPago == 3) { // Pago con cheque
+        $stmt->bind_param("sdssiiiiisss", $datos['tipoDocumentoCheque'], $datos['montoCheque'], $datos['fechaDepositoCheque'], $ano, $datos['rutAlumno'], $codigoProducto, $folioPago, $tipoPago, $estado, $datos['numeroDocumentoCheque'], $datos['fechaEmisionCheque'], $datos['fechaDepositoCheque']);
     }
 
-    // Ejecutar la consulta
-    if ($stmt->execute()) {
-        echo "Pago registrado con éxito";
-
-        // Actualizar el estado de las cuotas seleccionadas
-        $idsCuotasSeleccionadas = $datos['idsCuotasSeleccionadas'] ?? [];
-        foreach ($idsCuotasSeleccionadas as $idCuota) {
-            $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
-            $stmtCuota->bind_param("i", $idCuota);
-            $stmtCuota->execute();
-            $stmtCuota->close();
-        }
-    } else {
+    if (!$stmt->execute()) {
         echo "Error: " . $stmt->error;
     }
-
     $stmt->close();
-    $conn->close();
-} else {
-    echo "Método de solicitud no válido";
 }
 ?>
