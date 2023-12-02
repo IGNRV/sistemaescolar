@@ -60,10 +60,21 @@
                     </form>
 
                     <!-- Tabla de Pago con Efectivo -->
-                    <div class="table-responsive mt-4">
-                    <!-- Título personalizado con un ID para mostrar el total recaudado -->
-                        <h2 class="text-center custom-title" id="totalRecaudado">TOTAL RECAUDADO $</h2>
+                    <button type="submit" class="btn btn-primary btn-block">Selecciona Valores</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12 mt-4">
+        <div class="card">
+            <div class="card-header">
+            <!-- Título personalizado con un ID para mostrar el total recaudado -->
+            <h2 class="text-center custom-title" id="totalRecaudado">TOTAL RECAUDADO $</h2>
                         <h4 class="section-title">PAGO CON EFECTIVO</h4>
+            </div>
+                    <div class="table-responsive mt-4">
+                        
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -88,9 +99,7 @@
                                 <!-- Puedes agregar más filas según sea necesario -->
                             </tbody>
                         </table>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Selecciona Valores</button>
-                </div>
+                        </div>
             </div>
         </div>
     </div>
