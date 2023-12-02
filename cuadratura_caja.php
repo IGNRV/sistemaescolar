@@ -148,7 +148,7 @@
         <div class="card">
             <div class="card-header">
                 <!-- Título y subtítulo personalizados -->
-                <h3 class="text-center custom-title">TOTAL RECAUDADO $</h3>
+                <h3 class="text-center custom-title" id="totalRecaudadoTarjetaPOS">TOTAL RECAUDADO $</h3>
                 <h5 class="text-center">PAGO CON TARJETA POS</h5>
             </div>
             <div class="card-body">
@@ -165,7 +165,7 @@
                                 <th>RUT Alumno</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tablaTarjetaPOS">
                             <!-- Agrega filas de datos según tus necesidades -->
                             <tr>
                                 <td>Fecha de Pago</td>
@@ -186,7 +186,7 @@
         <div class="card">
             <div class="card-header">
                 <!-- Título y subtítulo personalizados -->
-                <h3 class="text-center custom-title">TOTAL RECAUDADO $</h3>
+                <h3 class="text-center custom-title" id="totalRecaudadoKhipu">TOTAL RECAUDADO $</h3>
                 <h5 class="text-center">PAGO CON KHIPU</h5>
             </div>
             <div class="card-body">
@@ -203,7 +203,7 @@
                                 <th>RUT Alumno</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tablaKhipu">
                             <!-- Agrega filas de datos según tus necesidades -->
                             <tr>
                                 <td>Fecha de Pago</td>
@@ -233,6 +233,10 @@ var datosEfectivo = [];
 var totalEfectivoGlobal = 0;
 var datosCheque = [];
 var totalChequeGlobal = 0;
+var datosTarjetaPOS = [];
+var totalTarjetaPOSGlobal = 0;
+var datosKhipu = [];
+var totalKhipuGlobal = 0;
 
 document.getElementById('btnBuscar').addEventListener('click', function() {
     var fecha = document.getElementById('fecha').value;
@@ -243,18 +247,33 @@ document.getElementById('btnBuscar').addEventListener('click', function() {
     xhr.onload = function() {
         if (this.status == 200) {
             var respuesta = JSON.parse(this.responseText);
-            if (medioPagoSeleccionado == "1") {
-                datosEfectivo = respuesta;
-                totalEfectivoGlobal = actualizarTabla(datosEfectivo, 'tablaEfectivo', 1);
-                document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalEfectivoGlobal.toFixed(2);
-            } else if (medioPagoSeleccionado == "3") {
-                datosCheque = respuesta;
-                totalChequeGlobal = actualizarTabla(datosCheque, 'tablaCheque', 3);
-                document.getElementById('totalRecaudadoCheque').textContent = 'TOTAL RECAUDADO $' + totalChequeGlobal.toFixed(2);
+            switch (medioPagoSeleccionado) {
+                case "1": // Efectivo
+                    datosEfectivo = respuesta;
+                    totalEfectivoGlobal = actualizarTabla(datosEfectivo, 'tablaEfectivo', 1);
+                    document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalEfectivoGlobal.toFixed(2);
+                    break;
+                case "3": // Cheque
+                    datosCheque = respuesta;
+                    totalChequeGlobal = actualizarTabla(datosCheque, 'tablaCheque', 3);
+                    document.getElementById('totalRecaudadoCheque').textContent = 'TOTAL RECAUDADO $' + totalChequeGlobal.toFixed(2);
+                    break;
+                case "2": // Tarjeta POS
+                    datosTarjetaPOS = respuesta;
+                    totalTarjetaPOSGlobal = actualizarTabla(datosTarjetaPOS, 'tablaTarjetaPOS', 2);
+                    document.getElementById('totalRecaudadoTarjetaPOS').textContent = 'TOTAL RECAUDADO $' + totalTarjetaPOSGlobal.toFixed(2);
+                    break;
+                case "4": // Khipu
+                    datosKhipu = respuesta;
+                    totalKhipuGlobal = actualizarTabla(datosKhipu, 'tablaKhipu', 4);
+                    document.getElementById('totalRecaudadoKhipu').textContent = 'TOTAL RECAUDADO $' + totalKhipuGlobal.toFixed(2);
+                    break;
             }
         } else {
             document.getElementById('tablaEfectivo').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
             document.getElementById('tablaCheque').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
+            document.getElementById('tablaTarjetaPOS').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
+            document.getElementById('tablaKhipu').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
         }
     };
     xhr.send();
@@ -282,8 +301,6 @@ function actualizarTabla(datos, idTabla, medioPago) {
     tabla.innerHTML = html;
     return total;
 }
-
-
 
 </script>
 
