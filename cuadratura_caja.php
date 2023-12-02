@@ -100,7 +100,7 @@
         <div class="card">
             <div class="card-header">
                 <!-- Título y subtítulo personalizados -->
-                <h2 class="text-center custom-title">TOTAL RECAUDADO $</h2>
+                <h2 class="text-center custom-title" id="totalRecaudadoCheque">TOTAL RECAUDADO $</h2>
                 <h5 class="text-center">PAGO CON CHEQUE</h5>
             </div>
             <div class="card-body">
@@ -117,7 +117,7 @@
                                 <th>RUT Alumno</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tablaCheque">
                             <!-- Agrega filas de datos según tus necesidades -->
                             <tr>
                                 <td>Fecha de Pago</td>
@@ -220,28 +220,60 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 <script>
-    document.getElementById('btnBuscar').addEventListener('click', function() {
+var datosEfectivo = [];
+var totalEfectivoGlobal = 0;
+var datosCheque = [];
+var totalChequeGlobal = 0;
+
+document.getElementById('btnBuscar').addEventListener('click', function() {
     var fecha = document.getElementById('fecha').value;
-    var medioPago = document.getElementById('medioPago').value;
+    var medioPagoSeleccionado = document.getElementById('medioPago').value;
 
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'busca_pagos.php?fecha=' + fecha + '&medioPago=' + medioPago, true);
+    xhr.open('GET', 'busca_pagos.php?fecha=' + fecha + '&medioPago=' + medioPagoSeleccionado, true);
     xhr.onload = function() {
-        if (this.status == 200 && this.responseText != '') {
-            document.getElementById('tablaEfectivo').innerHTML = this.responseText;
-            // Actualizar el total recaudado
-            var totalRecaudadoElement = document.querySelector('.totalRecaudado');
-            if (totalRecaudadoElement) {
-                var totalRecaudado = totalRecaudadoElement.getAttribute('data-total');
-                document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalRecaudado;
+        if (this.status == 200) {
+            var respuesta = JSON.parse(this.responseText);
+            if (medioPagoSeleccionado == "1") {
+                datosEfectivo = respuesta;
+                totalEfectivoGlobal = actualizarTabla(datosEfectivo, 'tablaEfectivo', 1);
+                document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalEfectivoGlobal.toFixed(2);
+            } else if (medioPagoSeleccionado == "3") {
+                datosCheque = respuesta;
+                totalChequeGlobal = actualizarTabla(datosCheque, 'tablaCheque', 3);
+                document.getElementById('totalRecaudadoCheque').textContent = 'TOTAL RECAUDADO $' + totalChequeGlobal.toFixed(2);
             }
         } else {
             document.getElementById('tablaEfectivo').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
-            document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $0';
+            document.getElementById('tablaCheque').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
         }
     };
     xhr.send();
 });
+
+function actualizarTabla(datos, idTabla, medioPago) {
+    var tabla = document.getElementById(idTabla);
+    var html = '';
+    var total = 0;
+
+    datos.forEach(function(fila) {
+        if (fila.medio_de_pago == medioPago) {
+            total += parseFloat(fila.valor);
+            html += `<tr>
+                        <td>${fila.fecha_pago}</td>
+                        <td>${fila.valor}</td>
+                        <td>${fila.medio_de_pago}</td>
+                        <td>${fila.tipo_documento}</td>
+                        <td>${fila.estado}</td>
+                        <td>${fila.rut_alumno}</td>
+                    </tr>`;
+        }
+    });
+
+    tabla.innerHTML = html;
+    return total;
+}
+
 
 
 </script>
