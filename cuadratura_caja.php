@@ -220,7 +220,7 @@
             </div>
         </div>
     </div>
-    <h5 class="text-center">TOTAL RECAUDADO $</h5>
+    <h5 class="text-center" id="totalRecaudadoGeneral">TOTAL RECAUDADO $</h5>
     <button type="submit" class="btn btn-primary btn-block">Generar Reporte</button>
 </div>
 
@@ -251,24 +251,27 @@ document.getElementById('btnBuscar').addEventListener('click', function() {
                 case "1": // Efectivo
                     datosEfectivo = respuesta;
                     totalEfectivoGlobal = actualizarTabla(datosEfectivo, 'tablaEfectivo', 1);
-                    document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalEfectivoGlobal.toFixed(2);
+                    document.getElementById('totalRecaudado').textContent = 'TOTAL RECAUDADO $' + totalEfectivoGlobal.toFixed(0);
                     break;
                 case "3": // Cheque
                     datosCheque = respuesta;
                     totalChequeGlobal = actualizarTabla(datosCheque, 'tablaCheque', 3);
-                    document.getElementById('totalRecaudadoCheque').textContent = 'TOTAL RECAUDADO $' + totalChequeGlobal.toFixed(2);
+                    document.getElementById('totalRecaudadoCheque').textContent = 'TOTAL RECAUDADO $' + totalChequeGlobal.toFixed(0);
                     break;
                 case "2": // Tarjeta POS
                     datosTarjetaPOS = respuesta;
                     totalTarjetaPOSGlobal = actualizarTabla(datosTarjetaPOS, 'tablaTarjetaPOS', 2);
-                    document.getElementById('totalRecaudadoTarjetaPOS').textContent = 'TOTAL RECAUDADO $' + totalTarjetaPOSGlobal.toFixed(2);
+                    document.getElementById('totalRecaudadoTarjetaPOS').textContent = 'TOTAL RECAUDADO $' + totalTarjetaPOSGlobal.toFixed(0);
                     break;
                 case "4": // Khipu
                     datosKhipu = respuesta;
                     totalKhipuGlobal = actualizarTabla(datosKhipu, 'tablaKhipu', 4);
-                    document.getElementById('totalRecaudadoKhipu').textContent = 'TOTAL RECAUDADO $' + totalKhipuGlobal.toFixed(2);
+                    document.getElementById('totalRecaudadoKhipu').textContent = 'TOTAL RECAUDADO $' + totalKhipuGlobal.toFixed(0);
                     break;
             }
+             // Actualizar el total general
+             var totalRecaudadoGeneral = totalEfectivoGlobal + totalChequeGlobal + totalTarjetaPOSGlobal + totalKhipuGlobal;
+                document.getElementById('totalRecaudadoGeneral').textContent = 'TOTAL RECAUDADO $' + totalRecaudadoGeneral.toFixed(0);
         } else {
             document.getElementById('tablaEfectivo').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
             document.getElementById('tablaCheque').innerHTML = '<tr><td colspan="6">No se han encontrado datos</td></tr>';
