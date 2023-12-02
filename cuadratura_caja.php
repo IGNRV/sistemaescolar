@@ -24,6 +24,9 @@
             margin-top: 20px; /* Ajusta el margen superior según tus preferencias */
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+
 </head>
 <body>
 
@@ -221,7 +224,8 @@
         </div>
     </div>
     <h5 class="text-center" id="totalRecaudadoGeneral">TOTAL RECAUDADO $</h5>
-    <button type="submit" class="btn btn-primary btn-block">Generar Reporte</button>
+    <button type="button" class="btn btn-primary btn-block" id="btnGenerarReporte">Generar Reporte</button>
+
 </div>
 
 <!-- Agrega el script de Bootstrap -->
@@ -286,16 +290,30 @@ function actualizarTabla(datos, idTabla, medioPago) {
     var tabla = document.getElementById(idTabla);
     var html = '';
     var total = 0;
+    // Objeto de mapeo para convertir números a texto para los medios de pago
+    var mediosDePago = {
+        '1': 'Efectivo',
+        '2': 'Tarjeta POS',
+        '3': 'Cheque',
+        '4': 'Khipu'
+    };
+    // Mapeo de estados
+    var estados = {
+        '1': 'Pagado'
+        // Aquí puedes agregar más estados si los hay
+    };
 
     datos.forEach(function(fila) {
+        var medioPagoTexto = mediosDePago[fila.medio_de_pago] || fila.medio_de_pago;
+        var estadoTexto = estados[fila.estado] || fila.estado; // Usa la representación de texto del estado
         if (fila.medio_de_pago == medioPago) {
             total += parseFloat(fila.valor);
             html += `<tr>
                         <td>${fila.fecha_pago}</td>
                         <td>${fila.valor}</td>
-                        <td>${fila.medio_de_pago}</td>
+                        <td>${medioPagoTexto}</td>
                         <td>${fila.tipo_documento}</td>
-                        <td>${fila.estado}</td>
+                        <td>${estadoTexto}</td> <!-- Usa estadoTexto aquí -->
                         <td>${fila.rut_alumno}</td>
                     </tr>`;
         }
@@ -304,6 +322,59 @@ function actualizarTabla(datos, idTabla, medioPago) {
     tabla.innerHTML = html;
     return total;
 }
+
+
+document.getElementById('btnGenerarReporte').addEventListener('click', function() {
+    var doc = new jspdf.jsPDF();
+    var finalY = 10; // Inicializamos el eje Y para que comience después del título del reporte
+
+    doc.setFontSize(18);
+    doc.text('Reporte de Cuadratura de Caja', 14, finalY);
+
+    finalY += 10; // Espacio después del título
+
+    // Agregar tablas y totales al PDF
+    var mediosPago = ['Efectivo', 'Cheque', 'TarjetaPOS', 'Khipu'];
+    mediosPago.forEach(function(medioPago, index) {
+        // Convertir el id para que coincida con el HTML
+        var seccion = medioPago.charAt(0).toUpperCase() + medioPago.slice(1).toLowerCase();
+        
+        doc.setFontSize(14);
+        finalY += 7; // Espacio antes de cada sección
+        doc.text('Pago con ' + seccion, 14, finalY);
+
+        doc.setFontSize(11);
+        finalY += 3; // Espacio para comenzar la tabla
+        doc.autoTable({ 
+            html: '#tabla' + seccion,
+            startY: finalY,
+            margin: { top: 30 },
+            didDrawPage: function (data) {
+                finalY = data.cursor.y; // Actualizar finalY al final de cada tabla
+            }
+        });
+
+        // Mostrar total recaudado por sección
+        var totalId = 'totalRecaudado' + (medioPago === 'Efectivo' ? '' : seccion);
+        var totalElement = document.getElementById(totalId);
+        if (totalElement) {
+            finalY += 7; // Espacio antes del total
+            doc.text(totalElement.textContent, 14, finalY);
+            finalY += 5; // Espacio después del total antes de la siguiente sección
+        }
+    });
+
+    // Agregar total general al final
+    var totalGeneralElement = document.getElementById('totalRecaudadoGeneral');
+    if (totalGeneralElement) {
+        finalY += 7; // Espacio antes del total general
+        doc.text(totalGeneralElement.textContent, 14, finalY);
+    }
+
+    // Guardar el PDF
+    doc.save('reporte_cuadratura.pdf');
+});
+
 
 </script>
 
