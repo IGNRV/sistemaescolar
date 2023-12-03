@@ -12,7 +12,8 @@ if(isset($_POST['rutPadre'])) {
                 cp.monto,
                 cp.estado_cuota,
                 YEAR(cp.fecha_cuota_deuda) AS año,
-                cp.id_alumno
+                cp.id_alumno,
+                pa.rut
               FROM
                 cuotas_pago AS cp
                 LEFT JOIN alumno AS a ON a.id = cp.id_alumno

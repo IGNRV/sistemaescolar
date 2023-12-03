@@ -349,6 +349,8 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
     var montoEfectivo = parseFloat(document.getElementById('montoEfectivo').value) || 0;
     var montoCheque = parseFloat(document.getElementById('montoCheque').value) || 0;
     var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
+    var rutPadre = document.getElementById('rutPadre').value; // Añadir esta línea para obtener el RUT del apoderado
+
 
     var totalMontoIngresado = montoEfectivo + montoCheque + montoPos;
     var totalAPagarTexto = document.getElementById('totalAPagar').textContent;
@@ -369,7 +371,8 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
         montoEfectivo: montoEfectivo,
         fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
         rutAlumno: document.getElementById('rutAlumno').value,
-        idsCuotasSeleccionadas: idsCuotasSeleccionadas
+        idsCuotasSeleccionadas: idsCuotasSeleccionadas,
+        rutPadre: document.getElementById('rutPadre').value
     };
 
     // Añadir lógica para el pago con cheque
