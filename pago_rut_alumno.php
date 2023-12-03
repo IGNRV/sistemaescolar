@@ -51,8 +51,8 @@
                                         <th>N° Cuota</th>
                                         <th>Fecha Vencimiento</th>
                                         <th>Monto</th>
-                                        <th>Medio de Pago</th>
-                                        <th>Fecha de Pago</th>
+                              <!--           <th>Medio de Pago</th>
+                                        <th>Fecha de Pago</th> -->
                                         <th>Estado</th>
                                         <th>Seleccione Valor a Pagar</th>
                                     </tr>
@@ -72,8 +72,8 @@
                                         <th>N° Cuota</th>
                                         <th>Fecha Vencimiento</th>
                                         <th>Monto</th>
-                                        <th>Medio de Pago</th>
-                                        <th>Fecha de Pago</th>
+                                    <!--     <th>Medio de Pago</th>
+                                        <th>Fecha de Pago</th> -->
                                         <th>Estado</th>
                                         <th>Seleccione Valor a Pagar</th>
                                     </tr>
@@ -453,12 +453,20 @@ document.getElementById('btnBuscarApoderado').addEventListener('click', function
 
                         // Creamos y agregamos las tablas al contenedor correspondiente al alumno
                         contenedorAlumno.innerHTML += `
-                            <h4>${esAnioActual ? 'Cuotas Periodo Actual' : 'Saldo Periodo Anterior'} para el alumno ID: ${idAlumno}</h4>
-                            <table class="table" id="${tablaId}">
-                                <thead> ... </thead>
-                                <tbody> ... </tbody>
-                            </table>
-                        `;
+                        <h4>${esAnioActual ? 'Cuotas Periodo Actual' : 'Saldo Periodo Anterior'} para el alumno ID: ${idAlumno}</h4>
+                        <table class="table" id="${tablaId}">
+                            <thead>
+                                <tr>
+                                    <th>N° Cuota</th>
+                                    <th>Fecha Vencimiento</th>
+                                    <th>Monto</th>
+                                    <th>Estado</th>
+                                    <th>Seleccione Valor a Pagar</th>
+                                </tr>
+                            </thead>
+                            <tbody> ... </tbody>
+                        </table>
+                    `;
 
                         // Llamamos a actualizarTabla para llenar la tabla con los datos correspondientes
                         actualizarTabla(datos, tablaId);
@@ -484,19 +492,16 @@ function actualizarTabla(datos, idTabla) {
         row.insertCell(0).textContent = index + 1; // N° Cuota
         row.insertCell(1).textContent = cuota.fecha_cuota_deuda; // Fecha Vencimiento
         row.insertCell(2).textContent = cuota.monto; // Monto
-        row.insertCell(3).textContent = ''; // Medio de Pago (aquí se debería poner el valor correspondiente si existe)
-        row.insertCell(4).textContent = ''; // Fecha de Pago (aquí se debería poner el valor correspondiente si existe)
         var estado = cuota.estado_cuota === '0' ? 'VIGENTE' : (cuota.estado_cuota === '1' ? 'VENCIDA' : 'PAGADA');
-        row.insertCell(5).textContent = estado; // Estado
+        row.insertCell(3).textContent = estado; // Estado
         
-        var cellCheck = row.insertCell(6);
+        var cellCheck = row.insertCell(4); // Celda para el checkbox
         var checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.classList.add('cuota-checkbox');
         checkbox.setAttribute('data-id-cuota', cuota.id);
         checkbox.value = cuota.monto;
         checkbox.disabled = cuota.estado_cuota === '2'; // Deshabilitar si la cuota está pagada
-
         cellCheck.appendChild(checkbox);
     });
 }
