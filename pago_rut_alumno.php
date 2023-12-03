@@ -31,6 +31,7 @@
                         <div class="form-group">
                             <label for="rutPadre">RUT del Padre/Apoderado</label>
                             <input type="text" class="form-control" id="rutPadre" placeholder="Ingrese el RUT del Padre/Apoderado">
+                            <button type="button" class="btn btn-primary custom-button mt-3" id="btnBuscarApoderado">Buscar</button>
                         </div>
 
                         <!-- Botón de pago -->
@@ -38,6 +39,10 @@
 
 
 <!-- Tabla de pagos -->
+
+<div id="datosAlumnos">
+    <!-- Las tablas generadas se insertarán aquí -->
+</div>
 <div class="mt-4 table-responsive">
                             <h4>Saldo Periodo Anterior</h4>
                             <table class="table" id="tablaSaldoPeriodoAnterior">
@@ -400,6 +405,93 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
     };
     xhr.send(JSON.stringify(datosPago));
 });
+
+// Asumiendo que el resto del código se mantiene sin cambios...
+
+document.getElementById('btnBuscarApoderado').addEventListener('click', function() {
+    var rutPadre = document.getElementById('rutPadre').value.trim();
+    if(rutPadre === '') {
+        alert('Por favor, ingrese un RUT.');
+        return;
+    }
+
+    // Limpiamos el contenedor antes de cargar nuevos datos
+    var contenedorDatosAlumnos = document.getElementById('datosAlumnos');
+    contenedorDatosAlumnos.innerHTML = '';
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', 'busca_padres_apoderados.php', true);
+    xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    xhr.onload = function () {
+        if (this.status == 200) {
+            var respuesta = JSON.parse(this.responseText);
+            if (respuesta.encontrado) {
+                Object.keys(respuesta.datos).forEach(function(idAlumno) {
+                    // Para cada ID de alumno, creamos las tablas de saldos y cuotas solo una vez.
+                    Object.keys(respuesta.datos[idAlumno]).sort().forEach(function(año, index, array) {
+                        var datos = respuesta.datos[idAlumno][año];
+                        var tablaId = 'tabla_' + idAlumno + '_' + año;
+                        var esAnioActual = año == new Date().getFullYear();
+
+                        // Verificamos si ya se creó un contenedor para este alumno
+                        var contenedorAlumno = document.getElementById('contenedor_' + idAlumno);
+                        if (!contenedorAlumno) {
+                            contenedorAlumno = document.createElement('div');
+                            contenedorAlumno.id = 'contenedor_' + idAlumno;
+                            contenedorDatosAlumnos.appendChild(contenedorAlumno);
+                        }
+
+                        // Creamos y agregamos las tablas al contenedor correspondiente al alumno
+                        contenedorAlumno.innerHTML += `
+                            <h4>${esAnioActual ? 'Cuotas Periodo Actual' : 'Saldo Periodo Anterior'} para el alumno ID: ${idAlumno}</h4>
+                            <table class="table" id="${tablaId}">
+                                <thead> ... </thead>
+                                <tbody> ... </tbody>
+                            </table>
+                        `;
+
+                        // Llamamos a actualizarTabla para llenar la tabla con los datos correspondientes
+                        actualizarTabla(datos, tablaId);
+                    });
+                });
+            } else {
+                alert('No se encontraron datos para el RUT ingresado.');
+            }
+        } else {
+            alert('Hubo un error al procesar la búsqueda.');
+        }
+    };
+    xhr.send('rutPadre=' + rutPadre);
+});
+
+
+function actualizarTabla(datos, idTabla) {
+    var tbody = document.getElementById(idTabla).querySelector('tbody');
+    tbody.innerHTML = ''; // Limpiar la tabla actual
+
+    datos.forEach(function(cuota, index) {
+        var row = tbody.insertRow();
+        row.insertCell(0).textContent = index + 1; // N° Cuota
+        row.insertCell(1).textContent = cuota.fecha_cuota_deuda; // Fecha Vencimiento
+        row.insertCell(2).textContent = cuota.monto; // Monto
+        row.insertCell(3).textContent = ''; // Medio de Pago (aquí se debería poner el valor correspondiente si existe)
+        row.insertCell(4).textContent = ''; // Fecha de Pago (aquí se debería poner el valor correspondiente si existe)
+        var estado = cuota.estado_cuota === '0' ? 'VIGENTE' : (cuota.estado_cuota === '1' ? 'VENCIDA' : 'PAGADA');
+        row.insertCell(5).textContent = estado; // Estado
+        
+        var cellCheck = row.insertCell(6);
+        var checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.classList.add('cuota-checkbox');
+        checkbox.setAttribute('data-id-cuota', cuota.id);
+        checkbox.value = cuota.monto;
+        checkbox.disabled = cuota.estado_cuota === '2'; // Deshabilitar si la cuota está pagada
+
+        cellCheck.appendChild(checkbox);
+    });
+}
+
+
 </script>
 </body>
 </html>
