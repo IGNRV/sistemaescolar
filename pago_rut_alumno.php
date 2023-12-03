@@ -454,18 +454,20 @@ document.getElementById('btnBuscarApoderado').addEventListener('click', function
                         // Creamos y agregamos las tablas al contenedor correspondiente al alumno
                         contenedorAlumno.innerHTML += `
                         <h4>${esAnioActual ? 'Cuotas Periodo Actual' : 'Saldo Periodo Anterior'} para el alumno ID: ${idAlumno}</h4>
-                        <table class="table" id="${tablaId}">
-                            <thead>
-                                <tr>
-                                    <th>N° Cuota</th>
-                                    <th>Fecha Vencimiento</th>
-                                    <th>Monto</th>
-                                    <th>Estado</th>
-                                    <th>Seleccione Valor a Pagar</th>
-                                </tr>
-                            </thead>
-                            <tbody> ... </tbody>
-                        </table>
+                        <div class="table-responsive">
+                            <table class="table" id="${tablaId}">
+                                <thead>
+                                    <tr>
+                                        <th>N° Cuota</th>
+                                        <th>Fecha Vencimiento</th>
+                                        <th>Monto</th>
+                                        <th>Estado</th>
+                                        <th>Seleccione Valor a Pagar</th>
+                                    </tr>
+                                </thead>
+                                <tbody> ... </tbody>
+                            </table>
+                        </div>
                     `;
 
                         // Llamamos a actualizarTabla para llenar la tabla con los datos correspondientes
