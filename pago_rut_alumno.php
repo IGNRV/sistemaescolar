@@ -415,6 +415,13 @@ document.getElementById('btnBuscarApoderado').addEventListener('click', function
         return;
     }
 
+    // Ocultar las tablas de periodos anteriores y actuales antes de la búsqueda
+    var tablasPeriodos = document.querySelectorAll('.table-responsive');
+    tablasPeriodos.forEach(function(tabla) {
+        tabla.style.display = 'none';
+    });
+
+
     // Limpiamos el contenedor antes de cargar nuevos datos
     var contenedorDatosAlumnos = document.getElementById('datosAlumnos');
     contenedorDatosAlumnos.innerHTML = '';
