@@ -20,17 +20,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     $montoPos = $datos['montoPos'] ?? 0;
-
     if ($montoPos > 0) {
         insertarPago($conn, $datos, 2); // 2 para pago con tarjeta POS
     }
 
+    $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
     foreach ($idsCuotasSeleccionadas as $idCuota) {
-        $stmtCuota = $conn->prepare("UPDATE cuotas_pago SET estado_cuota = 2 WHERE id = ?");
         $stmtCuota->bind_param("i", $idCuota);
         $stmtCuota->execute();
-        $stmtCuota->close();
     }
+    $stmtCuota->close();
 
     echo "Pago registrado con éxito";
     $conn->close();
@@ -47,8 +46,7 @@ function insertarPago($conn, $datos, $tipoPago) {
     $codigoProducto = 1; // Código del producto
     $estado = 1; // Estado del pago
 
-    $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, rut_apoderados, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-
+    // Usar sentencias preparadas para todos los tipos de pago
     if ($tipoPago == 1) { // Pago en efectivo
         $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, rut_apoderados, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sdssissiiisss", $datos['tipoDocumento'], $datos['montoEfectivo'], $datos['fechaPagoEfectivo'], $ano, $datos['rutAlumno'], $datos['rutPadre'], $codigoProducto, $folioPago, $tipoPago, $estado, $folioPago, $datos['fechaPagoEfectivo'], $datos['fechaPagoEfectivo']);
@@ -56,19 +54,9 @@ function insertarPago($conn, $datos, $tipoPago) {
         $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, rut_apoderados, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro, banco) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("sdssissiiissss", $datos['tipoDocumentoCheque'], $datos['montoCheque'], $datos['fechaDepositoCheque'], $ano, $datos['rutAlumno'], $datos['rutPadre'], $codigoProducto, $folioPago, $tipoPago, $estado, $datos['numeroDocumentoCheque'], $datos['fechaEmisionCheque'], $datos['fechaDepositoCheque'], $datos['bancoCheque']);
     } else if ($tipoPago == 2) { // Pago con tarjeta POS
-        $tipoDocumentoPos = $datos['tipoDocumentoPos'] ?? '';
-        $montoPos = $datos['montoPos'] ?? 0;
-        $fechaPagoPos = $datos['fechaPagoPos'] ?? '';
-        $comprobantePos = $datos['comprobantePos'] ?? '';
-        $tipoTarjetaPos = 2;
-        $cuotasPos = $datos['cuotasPos'] ?? '';
-        $fechaActual = date('Y-m-d');
-
         $stmt = $conn->prepare("INSERT INTO historial_de_pagos (tipo_documento, valor, fecha_pago, ano, rut_alumno, rut_apoderados, codigo_producto, folio_pago, medio_de_pago, estado, numero_documento, fecha_emision, fecha_cobro, n_cuotas) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sdssissiiisssi", $tipoDocumentoPos, $montoPos, $fechaPagoPos, $ano, $datos['rutAlumno'], $datos['rutPadre'], $codigoProducto, $folioPago, $tipoTarjetaPos, $estado, $comprobantePos, $fechaActual, $fechaActual, $datos['cuotasPos']);
-
+        $stmt->bind_param("sdssissiiisssi", $datos['tipoDocumentoPos'], $datos['montoPos'], $datos['fechaPagoPos'], $ano, $datos['rutAlumno'], $datos['rutPadre'], $codigoProducto, $folioPago, $tipoPago, $estado, $datos['comprobantePos'], $fechaActual, $fechaActual, $datos['cuotasPos']);
     }
-
 
     if (!$stmt->execute()) {
         echo "Error: " . $stmt->error;
