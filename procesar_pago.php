@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'db.php';
-
+ini_set('display_errors', 1);
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data['pagos']) && is_array($data['pagos'])) {
