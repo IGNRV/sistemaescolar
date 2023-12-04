@@ -344,12 +344,16 @@ metodosPago.forEach(function(metodo) {
     metodo.addEventListener('change', togglePaymentSections);
 });
 
+let rutAlumnoGlobal = '';
+
 // Manejador del evento click para el botón REGISTRAR PAGO
 document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', function() {
     var montoEfectivo = parseFloat(document.getElementById('montoEfectivo').value) || 0;
     var montoCheque = parseFloat(document.getElementById('montoCheque').value) || 0;
     var montoPos = parseFloat(document.getElementById('montoPos').value) || 0;
     var rutPadre = document.getElementById('rutPadre').value; // Añadir esta línea para obtener el RUT del apoderado
+    var rutAlumno = rutAlumnoGlobal || document.getElementById('rutAlumno').value;
+
 
 
     var totalMontoIngresado = montoEfectivo + montoCheque + montoPos;
@@ -372,7 +376,8 @@ document.querySelector('.btn-primary.btn-block.mt-4').addEventListener('click', 
         fechaPagoEfectivo: document.getElementById('fechaPagoEfectivo').value,
         rutAlumno: document.getElementById('rutAlumno').value,
         idsCuotasSeleccionadas: idsCuotasSeleccionadas,
-        rutPadre: document.getElementById('rutPadre').value
+        rutPadre: document.getElementById('rutPadre').value,
+        rutAlumno: rutAlumno,
     };
 
     // Añadir lógica para el pago con cheque
@@ -436,6 +441,9 @@ document.getElementById('btnBuscarApoderado').addEventListener('click', function
         if (this.status == 200) {
             var respuesta = JSON.parse(this.responseText);
             if (respuesta.encontrado) {
+                var primerIdAlumno = Object.keys(respuesta.datos)[0];
+                var primerAño = Object.keys(respuesta.datos[primerIdAlumno])[0];
+                rutAlumnoGlobal = respuesta.datos[primerIdAlumno][primerAño][0].rut_alumno;
                 Object.keys(respuesta.datos).forEach(function(idAlumno) {
                     // Para cada ID de alumno, creamos las tablas de saldos y cuotas solo una vez.
                     Object.keys(respuesta.datos[idAlumno]).sort().forEach(function(año, index, array) {

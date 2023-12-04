@@ -6,6 +6,7 @@ $respuesta = ['encontrado' => false, 'datos' => []];
 if(isset($_POST['rutPadre'])) {
     $rutPadre = $_POST['rutPadre'];
     $anioActual = date("Y");
+    // Incluye el rut_alumno en la consulta SQL
     $query = "SELECT 
                 cp.id,
                 cp.fecha_cuota_deuda,
@@ -13,7 +14,8 @@ if(isset($_POST['rutPadre'])) {
                 cp.estado_cuota,
                 YEAR(cp.fecha_cuota_deuda) AS año,
                 cp.id_alumno,
-                pa.rut
+                pa.rut,
+                a.rut AS rut_alumno
               FROM
                 cuotas_pago AS cp
                 LEFT JOIN alumno AS a ON a.id = cp.id_alumno
@@ -29,7 +31,7 @@ if(isset($_POST['rutPadre'])) {
     if ($resultado->num_rows > 0) {
         $respuesta['encontrado'] = true;
         while($row = $resultado->fetch_assoc()) {
-            // Agrupamos los datos por alumno y año
+            // Agrupamos los datos por alumno y año, incluyendo el rut_alumno
             $respuesta['datos'][$row['id_alumno']][$row['año']][] = $row;
         }
     }
