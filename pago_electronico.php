@@ -1,17 +1,44 @@
-<div class="pago-electronico">
-    <h2>Pago electrónico de cuotas</h2>
+<head>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
+    <style>
+        .pago-electronico {
+    background-color: #f8f9fa; /* Un fondo claro */
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.pago-electronico h2, .pago-electronico h3 {
+    color: #333; /* Un color oscuro para los títulos */
+}
+
+.pago-electronico .btn-primary {
+    background-color: #007bff; /* Color principal de Bootstrap */
+    border-color: #007bff;
+}
+
+.pago-electronico .table-striped {
+    background-color: #fff; /* Fondo blanco para las tablas */
+}
+
+    </style>
+</head>
+<div class="pago-electronico container my-4">
+    <h2 class="mb-4">Pago electrónico de cuotas</h2>
     <div class="form-group">
         <label for="rutAlumno">Rut del alumno:</label>
         <input type="text" class="form-control" id="rutAlumno" placeholder="Ingrese RUT del alumno">
-        <button class="btn btn-primary custom-button mt-3" id="btnBuscarAlumno">Buscar</button>
-    </div>
-    <div id="resultadoBusqueda"></div>
+        <button class="btn btn-primary mt-3" id="btnBuscarAlumno">Buscar</button>
 
-    <h3>Valores pendientes de año anterior</h3>
+    </div>
+    <div id="resultadoBusqueda" class="my-3"></div>
+
+    <h3 class="mt-4">Valores pendientes de año anterior</h3>
     <!-- Tabla de valores pendientes del año anterior -->
     <!-- La tabla deberá ser llenada con datos dinámicamente -->
     <div id="tablaValoresPendientes" class="table-responsive">
-        <table class="table">
+        <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>N° Cuota</th>
@@ -29,11 +56,11 @@
         </table>
     </div>
 
-    <h3>Plan de pago año en curso</h3>
+    <h3 class="mt-4">Plan de pago año en curso</h3>
     <!-- Tabla de plan de pago del año en curso -->
     <!-- La tabla deberá ser llenada con datos dinámicamente -->
     <div id="tablaPlanPagoActual" class="table-responsive">
-        <table class="table">
+        <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>N° Cuota</th>
@@ -51,12 +78,12 @@
         </table>
     </div>
 
-    <button class="btn btn-primary custom-button mt-3" id="btnSeleccionarValores">Seleccionar valores</button>
+    <button class="btn btn-primary mt-3" id="btnSeleccionarValores">Seleccionar valores</button>
 
 
-    <h3>Resumen de valores a pagar</h3>
+    <h3 class="mt-4">Resumen de valores a pagar</h3>
 <div class="table-responsive">
-    <table class="table" id="resumenValores">
+    <table class="table table-striped" id="resumenValores">
         <thead>
             <tr>
                 <th>N° Cupón</th>
@@ -284,7 +311,7 @@ document.getElementById('payWithTransfer').addEventListener('click', function() 
 
         // Enviar solicitud AJAX al backend
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'procesar_pago.php', true);
+        xhr.open('POST', 'procesar_pago_publico.php', true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.onload = function() {
             if (xhr.status === 200) {

@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once 'db.php';
-ini_set('display_errors', 1);
+
 $data = json_decode(file_get_contents('php://input'), true);
 
 if (isset($data['pagos']) && is_array($data['pagos'])) {
@@ -22,20 +22,12 @@ if (isset($data['pagos']) && is_array($data['pagos'])) {
         $numero_documento = is_null($fila['ultimo_numero']) ? 1 : $fila['ultimo_numero'] + 1;
 
         $query = "INSERT INTO historial_de_pagos (identificador_pago, rut_alumno, ano, codigo_producto, folio_pago, valor, fecha_pago, medio_de_pago, estado, fecha_vencimiento, tipo_documento, numero_documento, fecha_emision, fecha_cobro)
-                  VALUES (?, ?, ?, 4, ?, ?, CURDATE(), 4, 0, ?, 'khipu', ?, CURDATE(), CURDATE())";
+                  VALUES ('$identificadorPago', '$rutAlumno', '$ano', 4, '$folio_pago', '$monto', CURDATE(), 4, 0, '$fechaCuota', 'khipu', '$numero_documento', CURDATE(), CURDATE())";
 
-        $stmt = $conn->prepare($query);
-        if (!$stmt) {
-            echo "Error al preparar la consulta: " . $conn->error;
+        if (!$conn->query($query)) {
+            echo "Error al insertar en la base de datos: " . $conn->error;
             exit;
         }
-
-        $stmt->bind_param("ssisss", $identificadorPago, $rutAlumno, $ano, $folio_pago, $monto, $fechaCuota, $numero_documento);
-        if (!$stmt->execute()) {
-            echo "Error al insertar en la base de datos: " . $stmt->error;
-            exit;
-        }
-        $stmt->close();
     }
 
     $_SESSION['identificador_pago'] = $identificadorPago;
