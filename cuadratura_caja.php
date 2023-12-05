@@ -63,7 +63,7 @@
                     </form>
 
                     <!-- Tabla de Pago con Efectivo -->
-                    <button type="submit" class="btn btn-primary btn-block">Selecciona Valores</button>
+                    <!-- <button type="submit" class="btn btn-primary btn-block">Selecciona Valores</button> -->
                 </div>
             </div>
         </div>
