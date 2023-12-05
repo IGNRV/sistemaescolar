@@ -34,9 +34,6 @@
                             <button type="button" class="btn btn-primary custom-button mt-3" id="btnBuscarApoderado">Buscar</button>
                         </div>
 
-                        <!-- Botón de pago -->
-                        <button type="submit" class="btn btn-primary btn-block">Realizar Pago</button>
-
 
 <!-- Tabla de pagos -->
 
